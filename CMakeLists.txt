@@ -33,11 +33,11 @@ add_library(cldiff
     src/target.cpp
     src/optimiser.cpp
     src/optimiser_parallel_annealing.cpp
-    src/kinetic_dikin.cpp
-    src/tempered_objective.cpp
-    src/sampler_momentum.cpp
-    src/optimiser_momentum.cpp
-    src/optimiser_momentum_parallel_annealing.cpp
+    #src/kinetic_dikin.cpp
+    #src/tempered_objective.cpp
+    #src/sampler_momentum.cpp
+    #src/optimiser_momentum.cpp
+    #src/optimiser_momentum_parallel_annealing.cpp
     src/heston/characteristic_function.cpp
     src/heston/cumulants.cpp
     src/heston/cos_pricer.cpp
