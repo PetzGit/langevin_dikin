@@ -17,37 +17,12 @@
 #include "cldiff/core/rng.hpp"
 #include "cldiff/optim/optimisers/annealed_langevin.hpp"
 #include "cldiff/optim/schedules/three_phase_log.hpp"
+#include "cldiff/optim/optimisers/projected_gradient_descent.hpp"
 #include <Eigen/Dense>
 #include <cstdio>
 #include <cmath>
 #include <fstream>
 
-double runGradientDescent(const Objective& obj, const Polyhedron& polyhedron, Eigen::VectorXd& y,
-                           int max_iters, int max_backtracks, bool& out_stuck) {
-  double lr = 0.1;
-  double current_loss = obj.value(y);
-  out_stuck = false;
-  for (int it = 1; it <= max_iters; it++) {
-    Eigen::VectorXd grad = obj.gradient(y);
-    double trial_lr = lr;
-    Eigen::VectorXd y_new;
-    double new_loss = current_loss;
-    bool improved = false;
-    for (int bt = 0; bt < max_backtracks; bt++) {
-      y_new = y - trial_lr * grad;
-      if (polyhedron.contains(y_new)) {
-        new_loss = obj.value(y_new);
-        if (new_loss < current_loss) { improved = true; break; }
-      }
-      trial_lr *= 0.5;
-    }
-    if (!improved) { out_stuck = true; break; }
-    y = y_new;
-    current_loss = new_loss;
-    lr = trial_lr * 1.5;
-  }
-  return current_loss;
-}
 
 int main() {
   std::ifstream meta("meta.txt");
@@ -101,10 +76,11 @@ int main() {
   AnnealedLangevinOptimiser optimiser(schedule, r_rate, run_num, h_opt, eps_opt);
   OptimResult result = optimiser.minimise({log_objective, polyhedron}, x_0, rng);
 
-  Eigen::VectorXd y = result.x;
-  bool stuck = false;
-  double polish_loss = runGradientDescent(log_objective, polyhedron, y, polish_iters, polish_backtracks, stuck);
-  Eigen::VectorXd phys = CorrectedLogSpaceHestonObjective::toPhysical(y);
+  ProjectedGradientDescent polish(polish_iters, polish_backtracks);
+  OptimResult polished = polish.minimise({log_objective, polyhedron}, result.x, rng);
+  const double polish_loss = polished.value;
+  const bool stuck = polish.stuck();
+  Eigen::VectorXd phys = CorrectedLogSpaceHestonObjective::toPhysical(polished.x);
 
   std::printf("S0=%.2f r=%.4f q=%.4f  quotes=%d\n", S0, r, q, (int)n_quotes);
   std::printf("opt_loss=%.4e polish_loss=%.6e RMSE=%.4f vol pts  polish_stuck=%s Feller=%s\n",

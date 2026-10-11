@@ -32,6 +32,7 @@ add_library(cldiff
     src/optim/samplers/dikin_langevin.cpp
     src/optim/objective.cpp
     src/optim/optimisers/annealed_langevin.cpp
+    src/optim/optimisers/projected_gradient_descent.cpp
     src/optim/schedules/three_phase_log.cpp
     src/optim/schedules/parallel_floor.cpp
     #src/optim/geometry/kinetic_dikin.cpp

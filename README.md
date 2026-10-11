@@ -24,7 +24,7 @@ include/cldiff/                  public headers (src/ mirrors this)
     annealing_schedule.hpp       AnnealingSchedule::beta(step, n, chain, m)   <- interface
     polyhedron, tempered_objective
     geometry/                    kinetic_dikin (QR geometry + integrator for AKDL)
-    optimisers/                  annealed_langevin, annealed_akdl
+    optimisers/                  annealed_langevin, annealed_akdl, projected_gradient_descent
     samplers/                    dikin_langevin, akdl
     schedules/                   three_phase_log, parallel_floor
   market/                        Quote, MarketData
@@ -81,6 +81,9 @@ OptimResult result = optimiser.minimise({objective, polyhedron}, x0, rng);  // x
   of the final population (`OptimResult`).
 - **AnnealedAKDLOptimiser**: the same annealing/resampling scheme over AKDL chains,
   annealing the objective itself (`U/beta`).
+- **ProjectedGradientDescent**: deterministic backtracking gradient descent
+  that rejects steps leaving the polyhedron. Serves as the local baseline and
+  as the "polish" run from another optimiser's result.
 - **Schedules**: `ThreePhaseLogSchedule(rate)` is the original three-phase
   cooling (`rate` = `h` or `epsilon_base`). `ParallelFloorSchedule(base,
   floor_max)` wraps any schedule with per-chain temperature floors so some

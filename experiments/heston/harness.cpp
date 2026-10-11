@@ -59,6 +59,7 @@
 #include "cldiff/core/rng.hpp"
 #include "cldiff/optim/optimisers/annealed_langevin.hpp"
 #include "cldiff/optim/schedules/three_phase_log.hpp"
+#include "cldiff/optim/optimisers/projected_gradient_descent.hpp"
 
 #include <Eigen/Dense>
 #include <chrono>
@@ -67,50 +68,6 @@
 #include <cstdlib>
 #include <vector>
 
-// Backtracking gradient descent that rejects any trial step leaving the
-// polyhedron, the same way Optimiser::step() rejects an out-of-box proposal.
-// Without this the polish walks straight past hard parameter bounds -- rho
-// outside [-1,1] being the one that actually bit. Returns the final loss and
-// writes the final point into y; out_stuck reports that the line search found
-// no admissible improving step, as opposed to hitting max_iters.
-double runGradientDescent(const Objective& obj, const Polyhedron& polyhedron,
-                          Eigen::VectorXd& y, int max_iters, int max_backtracks,
-                          bool& out_stuck) {
-  double lr = 0.1;
-  double current_loss = obj.value(y);
-  out_stuck = false;
-
-  for (int iter = 1; iter <= max_iters; iter++) {
-    Eigen::VectorXd grad = obj.gradient(y);
-    double trial_lr = lr;
-    Eigen::VectorXd y_new;
-    double new_loss = current_loss;
-    bool improved = false;
-
-    for (int bt = 0; bt < max_backtracks; bt++) {
-      y_new = y - trial_lr * grad;
-      if (polyhedron.contains(y_new)) {
-        new_loss = obj.value(y_new);
-        if (new_loss < current_loss) {
-          improved = true;
-          break;
-        }
-      }
-      trial_lr *= 0.5;
-    }
-
-    if (!improved) {
-      out_stuck = true;
-      break;
-    }
-
-    y = y_new;
-    current_loss = new_loss;
-    lr = trial_lr * 1.5;
-  }
-
-  return current_loss;
-}
 
 int main(int argc, char** argv) {
   const double S0 = 100.0;
@@ -230,17 +187,19 @@ int main(int argc, char** argv) {
       std::fflush(stdout);
     };
 
+    // GD is deterministic and never draws from rng, so creating it first
+    // leaves the annealed optimiser's random stream unchanged.
+    Rng rng(s.seed);
+    ProjectedGradientDescent gd(polish_iters, polish_backtracks);
+
     // --- 1. box-constrained GD from the raw start ---
-    Eigen::VectorXd y_gd = CorrectedLogSpaceHestonObjective::toLogSpace(s.p);
-    bool gd_stuck = false;
     auto t_gd = std::chrono::steady_clock::now();
-    double gd_loss = runGradientDescent(log_objective, polyhedron, y_gd,
-                                        polish_iters, polish_backtracks, gd_stuck);
-    report("GD only", y_gd, gd_loss, gd_stuck,
+    OptimResult gd_result =
+        gd.minimise({log_objective, polyhedron}, CorrectedLogSpaceHestonObjective::toLogSpace(s.p), rng);
+    report("GD only", gd_result.x, gd_result.value, gd.stuck(),
            std::chrono::duration<double>(std::chrono::steady_clock::now() - t_gd).count());
 
     // --- 2. annealed Optimiser ---
-    Rng rng(s.seed);
     Eigen::VectorXd y0 = CorrectedLogSpaceHestonObjective::toLogSpace(s.p);
     Eigen::MatrixXd x_0(5, chain_num);
     for (int c = 0; c < chain_num; c++) {
@@ -263,12 +222,9 @@ int main(int argc, char** argv) {
     report("Optimiser", result.x, result.value, false, opt_secs);
 
     // --- 3. box-constrained GD polish from the Optimiser's result ---
-    Eigen::VectorXd y_polish = result.x;
-    bool polish_stuck = false;
     auto t_pol = std::chrono::steady_clock::now();
-    double polish_loss = runGradientDescent(log_objective, polyhedron, y_polish,
-                                            polish_iters, polish_backtracks, polish_stuck);
-    report("Optimiser + polish", y_polish, polish_loss, polish_stuck,
+    OptimResult polished = gd.minimise({log_objective, polyhedron}, result.x, rng);
+    report("Optimiser + polish", polished.x, polished.value, gd.stuck(),
            std::chrono::duration<double>(std::chrono::steady_clock::now() - t_pol).count());
     std::printf("\n");
   }
