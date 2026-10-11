@@ -1,29 +1,25 @@
 #pragma once
+#include <string>
 #include <Eigen/Dense>
-#include "cldiff/optim/objective.hpp"
-#include "cldiff/optim/polyhedron.hpp"
-#include "cldiff/core/rng.hpp"
 #include <Eigen/Cholesky>
+#include "cldiff/optim/sampler.hpp"
+
 struct Proposal {
   Eigen::VectorXd Y;
   Eigen::VectorXd x_i;
 };
 
-
-class Sampler {
+// Metropolis-adjusted overdamped Dikin-Langevin sampler on a polytope.
+class DikinLangevinSampler final : public Sampler {
 public:
-  Sampler(const Objective& objective, const Polyhedron& polyhedron, Rng& rng, double eps, Eigen::VectorXd x, double h_max);
-  void step();
-  Eigen::MatrixXd run(int n);
-
+  DikinLangevinSampler(double eps, double h_max);
+  Eigen::MatrixXd sample(const Problem& problem, const Eigen::VectorXd& x0, Rng& rng, int n) override;
+  std::string name() const override { return "dikin_langevin"; }
 private:
-  Eigen::VectorXd proposeState(const Eigen::VectorXd& x, const Eigen::LLT<Eigen::MatrixXd>& llt, const double beta) const;
-  Proposal propose(const Eigen::VectorXd& x, const Eigen::VectorXd& m_x, double h, const Eigen::MatrixXd& L, const double beta) const;
-
-  const Objective& objective_;
-  const Polyhedron& polyhedron_;
-  Rng& rng_;
+  struct Run;
+  void step(Run& run) const;
+  Eigen::VectorXd proposeState(const Run& run, const Eigen::VectorXd& x, const Eigen::LLT<Eigen::MatrixXd>& llt, const double beta) const;
+  Proposal propose(Run& run, const Eigen::VectorXd& x, const Eigen::VectorXd& m_x, double h, const Eigen::MatrixXd& L, const double beta) const;
   double eps_;
-  Eigen::VectorXd x_;
   double h_max_;
 };

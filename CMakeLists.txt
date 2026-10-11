@@ -32,17 +32,21 @@ add_library(cldiff
     src/optim/samplers/dikin_langevin.cpp
     src/optim/objective.cpp
     src/optim/optimisers/annealed_langevin.cpp
-    src/optim/optimisers/annealed_langevin_parallel.cpp
+    src/optim/schedules/three_phase_log.cpp
+    src/optim/schedules/parallel_floor.cpp
     #src/optim/geometry/kinetic_dikin.cpp
     #src/optim/tempered_objective.cpp
     #src/optim/samplers/akdl.cpp
     #src/optim/optimisers/annealed_akdl.cpp
-    #src/optim/optimisers/annealed_akdl_parallel.cpp
     src/models/heston/characteristic_function.cpp
     src/models/heston/cumulants.cpp
     src/pricing/fourier/cos_pricer.cpp
     src/models/black_scholes/black_scholes.cpp
     src/market/market_data.cpp
+    src/models/heston/heston_cos_pricer.cpp
+    src/calibration/calibration_objective.cpp
+    src/calibration/implied_vol_squared_loss.cpp
+    src/calibration/feller_penalty.cpp
     src/calibration/heston_objective.cpp
     src/models/heston/feller.cpp
     src/calibration/corrected_log_space_heston_objective.cpp

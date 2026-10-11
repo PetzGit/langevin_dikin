@@ -35,8 +35,8 @@ int main() {
  double eps = 1e-5;
  double h_max = 0.1;
  Eigen::VectorXd x_0 = Eigen::VectorXd::Zero(3);
- Sampler sampler(gaussian, poly, rng, eps, x_0, h_max);
- Eigen::MatrixXd output = sampler.run(100000);
+ DikinLangevinSampler sampler(eps, h_max);
+ Eigen::MatrixXd output = sampler.sample({gaussian, poly}, x_0, rng, 100000);
  //Eigen::VectorXd mean_position = output.rowwise().mean();
  std::cout << output << std::endl;
  return 0;

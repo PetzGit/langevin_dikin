@@ -1,0 +1,9 @@
+#pragma once
+#include <Eigen/Dense>
+
+// Soft constraint on the model parameters, added to a calibration loss.
+class ParameterPenalty {
+public:
+  virtual ~ParameterPenalty() = default;
+  virtual double operator()(const Eigen::VectorXd& params) const = 0;
+};

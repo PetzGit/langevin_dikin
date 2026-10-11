@@ -1,52 +1,30 @@
-// optimiser.hpp
 #pragma once
-
-#include "cldiff/optim/polyhedron.hpp"
-#include "cldiff/core/rng.hpp"
-#include "cldiff/optim/objective.hpp"
+#include <string>
 #include <Eigen/Dense>
+#include "cldiff/optim/optimiser.hpp"
+#include "cldiff/optim/annealing_schedule.hpp"
 
-struct ProposalResult {
-  Eigen::VectorXd best_particle;
-  double result;
-};
-
-// Base annealed-Langevin-on-polyhedron optimiser. Default behaviour (a single
-// shared temperature schedule applied identically to every chain) is
-// unchanged from the original implementation -- existing callers see no
-// difference. The one design decision that plausibly benefits from variation
-// -- what temperature chain i gets at a given step -- is a protected virtual
-// hook (chainBeta), so alternative annealing strategies (e.g. a parallel
-// schedule that keeps some chains persistently warmer for ongoing
-// exploration) can be added as subclasses without touching this class.
-class Optimiser {
+// Annealed Langevin-on-polyhedron optimiser: every column of x0 is a chain
+// run through overdamped Dikin-Langevin dynamics at the temperature the
+// schedule assigns it, with fitness resampling (best chain kept) every
+// r_rate steps. The temperature strategy is pluggable via AnnealingSchedule
+// -- ThreePhaseLogSchedule(h) reproduces the original shared schedule,
+// wrapping it in ParallelFloorSchedule reproduces ParallelAnnealingOptimiser.
+class AnnealedLangevinOptimiser final : public Optimiser {
 public:
-  Optimiser(const Objective& objective, const Polyhedron& polyhedron, Rng& rng, Eigen::MatrixXd x_0,
-            int r_rate, int chain_num, int run_num, double h, double eps);
-  virtual ~Optimiser() = default;
-  ProposalResult run();
-
-protected:
-  void step();
-  // Temperature assigned to chain i at the current step_num_. Default:
-  // the single shared schedule, identical for every chain (original
-  // behaviour). Override to give chains heterogeneous schedules.
-  virtual double chainBeta(int chain_index) const;
+  AnnealedLangevinOptimiser(const AnnealingSchedule& schedule, int r_rate, int run_num, double h, double eps);
+  OptimResult minimise(const Problem& problem, const Eigen::MatrixXd& x0, Rng& rng) override;
+  std::string name() const override { return "annealed_langevin"; }
+private:
+  struct Run;
   // todo: abstract this into a "chain" object which we feed into Sampler and Optimiser.
   // Currently just reimplementing the proposeState and proposal logic.
-  Eigen::VectorXd updateChain(const Eigen::VectorXd& x, double beta) const;
-  Eigen::VectorXd genTemp(int run_num) const;
-  void resample();
-
-  const Objective& objective_;
-  const Polyhedron& polyhedron_;
-  Rng& rng_;
-  Eigen::MatrixXd x_;
-  Eigen::VectorXd temp_;
+  Eigen::VectorXd updateChain(Run& run, const Eigen::VectorXd& x, double beta) const;
+  void step(Run& run) const;
+  void resample(Run& run) const;
+  const AnnealingSchedule& schedule_;
   int r_rate_;
-  int chain_num_;
   int run_num_;
-  int step_num_;
   double h_;
   double eps_;
 };

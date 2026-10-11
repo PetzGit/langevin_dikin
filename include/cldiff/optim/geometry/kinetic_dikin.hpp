@@ -5,8 +5,8 @@
 
 // Shared geometry and integrator for kinetic Dikin-Langevin dynamics, per
 // Chok, Petzinna & Vasil, "Kinetic Dikin-Langevin Dynamics on Polytopes"
-// (2026). Used by both SamplerMomentum (AKDL, Algorithm 4) and
-// OptimiserMomentum (annealed UKDL-style dynamics).
+// (2026). Used by both AKDLSampler (AKDL, Algorithm 4) and
+// AnnealedAKDLOptimiser (annealed AKDL chains).
 //
 // Geometry: for slacks s(x) = b - Ax, the thin QR factorization
 // S(x)^{-1} A = Q(x) R(x) (Q orthonormal columns, R upper triangular with

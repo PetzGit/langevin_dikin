@@ -16,6 +16,7 @@
 #include "cldiff/optim/polyhedron.hpp"
 #include "cldiff/core/rng.hpp"
 #include "cldiff/optim/optimisers/annealed_langevin.hpp"
+#include "cldiff/optim/schedules/three_phase_log.hpp"
 #include <Eigen/Dense>
 #include <cstdio>
 #include <cmath>
@@ -96,17 +97,18 @@ int main() {
     if (!polyhedron.contains(col)) col = y0;
     x_0.col(c) = col;
   }
-  Optimiser optimiser(log_objective, polyhedron, rng, x_0, r_rate, chain_num, run_num, h_opt, eps_opt);
-  ProposalResult result = optimiser.run();
+  ThreePhaseLogSchedule schedule(h_opt);
+  AnnealedLangevinOptimiser optimiser(schedule, r_rate, run_num, h_opt, eps_opt);
+  OptimResult result = optimiser.minimise({log_objective, polyhedron}, x_0, rng);
 
-  Eigen::VectorXd y = result.best_particle;
+  Eigen::VectorXd y = result.x;
   bool stuck = false;
   double polish_loss = runGradientDescent(log_objective, polyhedron, y, polish_iters, polish_backtracks, stuck);
   Eigen::VectorXd phys = CorrectedLogSpaceHestonObjective::toPhysical(y);
 
   std::printf("S0=%.2f r=%.4f q=%.4f  quotes=%d\n", S0, r, q, (int)n_quotes);
   std::printf("opt_loss=%.4e polish_loss=%.6e RMSE=%.4f vol pts  polish_stuck=%s Feller=%s\n",
-              result.result, polish_loss, std::sqrt(polish_loss / n_quotes) * 100.0,
+              result.value, polish_loss, std::sqrt(polish_loss / n_quotes) * 100.0,
               stuck ? "yes" : "no", satisfiesFeller(phys) ? "yes" : "no");
   const char* names[5] = {"kappa", "theta", "xi", "rho", "v0"};
   for (int i = 0; i < 5; i++) std::printf("  %-8s = %.4f\n", names[i], phys(i));

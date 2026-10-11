@@ -10,7 +10,7 @@
 // the actual test of "did the Optimiser find a better basin than GD could
 // reach on its own" -- if polishing drives the loss down near the true
 // minimum, the Optimiser did real global work; if the polish loss stays
-// near result.result, the Optimiser landed in the same local minimum GD
+// near result.value, the Optimiser landed in the same local minimum GD
 // would have found anyway, and the two methods aren't meaningfully
 // different on that starting point.
 //
@@ -27,6 +27,7 @@
 #include "cldiff/optim/polyhedron.hpp"
 #include "cldiff/core/rng.hpp"
 #include "cldiff/optim/optimisers/annealed_langevin.hpp"
+#include "cldiff/optim/schedules/three_phase_log.hpp"
 
 #include <Eigen/Dense>
 #include <cstdio>
@@ -244,8 +245,9 @@ int main() {
       }
       x_0.col(c) = col;
     }
-    Optimiser optimiser(log_objective, polyhedron, rng, x_0, r_rate, chain_num, run_num, h_opt, eps_opt);
-    ProposalResult result = optimiser.run();
+    ThreePhaseLogSchedule schedule(h_opt);
+    AnnealedLangevinOptimiser optimiser(schedule, r_rate, run_num, h_opt, eps_opt);
+    OptimResult result = optimiser.minimise({log_objective, polyhedron}, x_0, rng);
 
     // --- GD polish, starting from the Optimiser's own result ---
     // This is the actual test: did the Optimiser find a genuinely better
@@ -253,14 +255,14 @@ int main() {
     // approaches the true minimum, yes. If polish loss stays close to
     // Opt loss, the Optimiser converged to the same (possibly local)
     // minimum a local method would have found from there anyway.
-    Eigen::VectorXd y_polish = result.best_particle;
+    Eigen::VectorXd y_polish = result.x;
     bool polish_stuck = false;
     double polish_loss = runGradientDescent(log_objective, polyhedron, y_polish,
                                              polish_iters, polish_backtracks, polish_stuck);
 
     std::printf("%-3zu [%.2f, %.3f, %.2f, %.2f, %.3f]  %-13.4e %-13.4e %-13.4e %-9s %-9s\n",
                 i, starts[i](0), starts[i](1), starts[i](2), starts[i](3), starts[i](4),
-                gd_loss, result.result, polish_loss,
+                gd_loss, result.value, polish_loss,
                 stuck ? "yes" : "no", polish_stuck ? "yes" : "no");
   }
 

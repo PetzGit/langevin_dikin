@@ -16,6 +16,7 @@
 // which is the comparison the paper's abstract itself makes.
 
 #include "cldiff/optim/optimisers/annealed_langevin.hpp"
+#include "cldiff/optim/schedules/three_phase_log.hpp"
 #include "cldiff/optim/polyhedron.hpp"
 #include "cldiff/core/rng.hpp"
 #include "cldiff/optim/objective.hpp"
@@ -57,13 +58,14 @@ struct RunSummary {
 };
 
 RunSummary runOnce(NonConvexObjective& obj, const Polyhedron& poly,
-                    const Eigen::MatrixXd& x0, int r_rate, int chain_num,
+                    const Eigen::MatrixXd& x0, int r_rate,
                     int run_num, double h, double eps, int seed,
                     double target, double tol) {
     Rng rng(seed);
-    Optimiser opt(obj, poly, rng, x0, r_rate, chain_num, run_num, h, eps);
-    ProposalResult result = opt.run();
-    return RunSummary{result.result, std::abs(result.result - target) < tol};
+    ThreePhaseLogSchedule schedule(h);
+    AnnealedLangevinOptimiser opt(schedule, r_rate, run_num, h, eps);
+    OptimResult result = opt.minimise({obj, poly}, x0, rng);
+    return RunSummary{result.value, std::abs(result.value - target) < tol};
 }
 
 int main() {
@@ -109,10 +111,10 @@ int main() {
               << std::setw(10) << "ok" << "\n";
 
     for (int seed : seeds) {
-        RunSummary interacting = runOnce(obj, poly, x0, r_rate, N, run_num,
+        RunSummary interacting = runOnce(obj, poly, x0, r_rate, run_num,
                                           h, eps, seed, target, tol);
         RunSummary noninteracting = runOnce(obj, poly, x0, r_rate_noninteracting,
-                                             N, run_num, h, eps, seed, target, tol);
+                                             run_num, h, eps, seed, target, tol);
 
         interacting_successes += interacting.success;
         noninteracting_successes += noninteracting.success;

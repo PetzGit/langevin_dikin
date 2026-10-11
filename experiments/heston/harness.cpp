@@ -58,6 +58,7 @@
 #include "cldiff/optim/polyhedron.hpp"
 #include "cldiff/core/rng.hpp"
 #include "cldiff/optim/optimisers/annealed_langevin.hpp"
+#include "cldiff/optim/schedules/three_phase_log.hpp"
 
 #include <Eigen/Dense>
 #include <chrono>
@@ -254,15 +255,15 @@ int main(int argc, char** argv) {
     }
 
     auto t_opt = std::chrono::steady_clock::now();
-    Optimiser optimiser(log_objective, polyhedron, rng, x_0, r_rate, chain_num,
-                        run_num, h_opt, eps_opt);
-    ProposalResult result = optimiser.run();
+    ThreePhaseLogSchedule schedule(h_opt);
+    AnnealedLangevinOptimiser optimiser(schedule, r_rate, run_num, h_opt, eps_opt);
+    OptimResult result = optimiser.minimise({log_objective, polyhedron}, x_0, rng);
     double opt_secs =
         std::chrono::duration<double>(std::chrono::steady_clock::now() - t_opt).count();
-    report("Optimiser", result.best_particle, result.result, false, opt_secs);
+    report("Optimiser", result.x, result.value, false, opt_secs);
 
     // --- 3. box-constrained GD polish from the Optimiser's result ---
-    Eigen::VectorXd y_polish = result.best_particle;
+    Eigen::VectorXd y_polish = result.x;
     bool polish_stuck = false;
     auto t_pol = std::chrono::steady_clock::now();
     double polish_loss = runGradientDescent(log_objective, polyhedron, y_polish,
