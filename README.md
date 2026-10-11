@@ -47,7 +47,7 @@ include/cldiff/                  public headers (src/ mirrors this)
     heston_objective, corrected_log_space_heston_objective
 experiments/                     buildable studies, one executable each (see below)
 data_loader/                     yfinance -> CSV pipeline for real SPX option-chain data
-tests/                           Catch2 scaffolding (not currently wired into the build)
+tests/                           Catch2 unit tests (ctest)
 ```
 
 Dependencies point one way: `core <- optim <- calibration -> pricing ->
@@ -136,10 +136,9 @@ Calibrates the Heston stochastic-volatility model to a set of
 
 ### Experiments
 
-- `experiments/test_pricer.cpp`, `test_black_scholes.cpp`, `test_heston_objective.cpp`:
-  unit-style sanity checks for the pricer, Black-Scholes, and objective in
-  isolation.
-- `experiments/test_heston_calibration.cpp`: calibration on synthetic data.
+- `experiments/heston/multistart_calibration.cpp` (target `heston_multistart_calibration`):
+  GD alone vs annealed optimiser vs optimiser + GD polish, on synthetic data
+  from several starting points.
 - `experiments/heston/harness.cpp` (target `heston_reference_recovery`):
   reference validation run -- fits synthetic data (known true params) from
   two starting points, one of them adversarial, using three arms (GD alone,
@@ -159,6 +158,13 @@ the risk-free rate (`^IRX`) and dividend yield (put-call parity on near-money
 strikes), filters for liquidity (open interest + bid-ask spread), and writes
 `dat.csv` (`T K price` rows) and `meta.txt` (`S0 r q`) for
 `heston_spx_calibration` to consume.
+
+## Tests
+
+`tests/` holds Catch2 unit tests: the Black-Scholes implied-vol round trip,
+the COS pricer against the Fang & Oosterlee (2008) benchmark, and
+HestonObjective's behaviour around known true parameters. Run them with
+`ctest` from the build directory.
 
 ## Build
 

@@ -1,7 +1,7 @@
 add_executable(cldiff_tests
-    test_polyhedron.cpp
-    test_rng.cpp
-    test_sampler.cpp
+    test_black_scholes.cpp
+    test_cos_pricer.cpp
+    test_heston_objective.cpp
 )
 target_link_libraries(cldiff_tests PRIVATE cldiff Catch2::Catch2WithMain)
 

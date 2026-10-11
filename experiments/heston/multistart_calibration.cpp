@@ -1,4 +1,4 @@
-// examples/test_multistart_comparison.cpp
+// experiments/heston/multistart_calibration.cpp
 //
 // Compares plain gradient descent against the annealed Optimiser across
 // several diverse starting points, on the same synthetic market. The point:

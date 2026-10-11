@@ -59,7 +59,8 @@ target_link_libraries(cldiff PUBLIC Eigen3::Eigen)
 target_compile_options(cldiff PRIVATE -Wall -Wextra -Werror)
 
 # --- Tests ---
-#enable_testing()
-#add_subdirectory(tests)
+list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
+enable_testing()
+add_subdirectory(tests)
 
 add_subdirectory(experiments)

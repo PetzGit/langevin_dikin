@@ -4,7 +4,7 @@
 // box-constrained GD polish.
 //
 // Run from data_loader/ (so dat.csv/meta.txt resolve from cwd):
-//   cd data_loader && ../build/examples/heston_spx_calibration
+//   cd data_loader && ../build/experiments/heston_spx_calibration
 #include "cldiff/models/heston/characteristic_function.hpp"
 #include "cldiff/models/heston/cumulants.hpp"
 #include "cldiff/pricing/fourier/cos_pricer.hpp"

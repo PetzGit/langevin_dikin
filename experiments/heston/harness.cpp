@@ -1,4 +1,4 @@
-// examples/heston/harness.cpp
+// experiments/heston/harness.cpp
 //
 // Heston calibration harness: measures whether the annealed Optimiser escapes
 // local minima that plain gradient descent cannot, and whether the resulting

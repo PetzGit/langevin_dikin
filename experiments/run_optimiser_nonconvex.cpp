@@ -1,4 +1,4 @@
-// examples/run_optimiser_nonconvex_multiseed.cpp
+// experiments/run_optimiser_nonconvex.cpp
 //
 // Validation test, not library code: multi-seed comparison of the
 // interacting (resampling) annealed optimiser against N independent
