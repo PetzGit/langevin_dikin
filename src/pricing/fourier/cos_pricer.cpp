@@ -2,6 +2,8 @@
 #include <cmath>
 #include <algorithm>
 
+namespace cldiff {
+
 // Truncation half-width is capped so it can never outgrow what term_num terms
 // can resolve. Without this, parameter draws with large c_2 (e.g. low kappa,
 // high xi/v0 -- well within a typical calibration search box) blow the range
@@ -45,3 +47,5 @@ double cos_pricer(const CharacteristicHeston& phi, const Range& r, double strike
   }
   return std::exp(-rate*T) * sum;
 }
+
+}  // namespace cldiff

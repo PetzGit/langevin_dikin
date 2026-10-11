@@ -4,6 +4,8 @@
 #include <cmath>
 #include <algorithm>
 
+namespace cldiff {
+
 struct AKDLSampler::Run {
   const Objective& objective;
   const Polyhedron& polyhedron;
@@ -107,3 +109,4 @@ double AKDLSampler::acceptanceRate() const {
   return n_steps_ == 0 ? 0.0 : static_cast<double>(n_accept_) / static_cast<double>(n_steps_);
 }
 
+}  // namespace cldiff

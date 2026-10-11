@@ -6,6 +6,8 @@
 #include <iostream>
 #include <algorithm>
 
+namespace cldiff {
+
 struct AnnealedAKDLOptimiser::Run {
   const Objective& objective;
   const Polyhedron& polyhedron;
@@ -162,3 +164,5 @@ OptimResult AnnealedAKDLOptimiser::minimise(const Problem& problem, const Eigen:
   }
   return OptimResult{run.x.col(best_ind), best_eval};
 }
+
+}  // namespace cldiff

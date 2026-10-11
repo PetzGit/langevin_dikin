@@ -3,6 +3,8 @@
 #include <cmath>
 #include <stdexcept>
 
+namespace cldiff {
+
 HestonScheme::HestonScheme(const Eigen::VectorXd& p, double r, double q) {
   params_.r = r;
   params_.q = q;
@@ -43,3 +45,5 @@ Eigen::VectorXd HestonScheme::parameters() const {
   p << params_.kappa, params_.theta, params_.xi, params_.rho;
   return p;
 }
+
+}  // namespace cldiff

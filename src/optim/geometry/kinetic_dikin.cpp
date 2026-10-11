@@ -3,6 +3,8 @@
 #include <Eigen/LU>
 #include <cmath>
 
+namespace cldiff {
+
 namespace kinetic_dikin {
 
 DikinFactors computeFactors(const Eigen::MatrixXd& A, const Eigen::VectorXd& b,
@@ -163,3 +165,5 @@ StepResult dstep(const Objective& objective, const Polyhedron& polyhedron,
 }
 
 }  // namespace kinetic_dikin
+
+}  // namespace cldiff

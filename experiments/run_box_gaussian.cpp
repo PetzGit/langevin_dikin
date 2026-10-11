@@ -4,6 +4,8 @@
 #include "cldiff/optim/objective.hpp"
 #include <Eigen/Dense>
 #include <iostream>
+
+using namespace cldiff;
 class GaussianObjective : public Objective {
 public:
     explicit GaussianObjective(int d) : d_(d) {}

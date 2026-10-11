@@ -4,6 +4,8 @@
 #include <cmath>
 #include <iostream>
 
+namespace cldiff {
+
 struct AnnealedLangevinOptimiser::Run {
   const Objective& objective;
   const Polyhedron& polyhedron;
@@ -121,3 +123,5 @@ OptimResult AnnealedLangevinOptimiser::minimise(const Problem& problem, const Ei
   }
   return OptimResult{run.x.col(best_ind), best_eval};
 }
+
+}  // namespace cldiff

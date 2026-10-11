@@ -1,6 +1,8 @@
 #include "cldiff/pricing/pde/grid.hpp"
 #include <cmath>
 
+namespace cldiff {
+
 Grid::Grid(int N,double K,double alpha,double S_max) : N_(N), K_(K), alpha_(alpha), S_max_(S_max) {
   const double lower = std::asinh(-1.0*K_/alpha_);
   const double upper = std::asinh((S_max_-K_)/alpha_);
@@ -24,3 +26,4 @@ const std::vector<double>& Grid::grid() const {
   return grid_;
 }
 
+}  // namespace cldiff

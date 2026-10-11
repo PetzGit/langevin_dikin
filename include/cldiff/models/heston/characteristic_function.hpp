@@ -1,6 +1,9 @@
 #pragma once
 #include <Eigen/Dense>
 #include <complex>
+
+namespace cldiff {
+
 //heston params will be supplied from sampler/optimiser itself. Optimiser owns the parameter space
 class CharacteristicHeston{
   public:
@@ -15,3 +18,5 @@ class CharacteristicHeston{
     double v_0_;
     Eigen::VectorXd params_;
 };
+
+}  // namespace cldiff

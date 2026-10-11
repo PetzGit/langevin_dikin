@@ -2,6 +2,8 @@
 #include <Eigen/Dense>
 #include "cldiff/market/market_data.hpp"
 
+namespace cldiff {
+
 // Model + method, priced against a set of quotes: the seam between pricing
 // and calibration. CalibrationObjective only ever sees this interface, so
 // COS, Monte Carlo and PDE pricers of any model are interchangeable to it.
@@ -17,3 +19,5 @@ public:
   // One model price per quote, in MarketData::quotesByMaturity() order.
   virtual Eigen::VectorXd price(const Eigen::VectorXd& params, const MarketData& market) const = 0;
 };
+
+}  // namespace cldiff

@@ -4,6 +4,9 @@
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+
+namespace cldiff {
+
 MarketData::MarketData(double S0, double r, double q)
 : S0_(S0), r_(r), q_(q) {
 
@@ -43,3 +46,4 @@ void MarketData::loadFromCsv(const std::string& path) {
   }
 }
 
+}  // namespace cldiff

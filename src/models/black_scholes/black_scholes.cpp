@@ -2,6 +2,9 @@
 #include <cmath>
 #include <iostream>
 #include <algorithm>
+
+namespace cldiff {
+
 double normal_cdf( double x) {
   return 0.5*(1+std::erf(x/std::sqrt(2)));
 }
@@ -72,3 +75,5 @@ double BlackSchole::impliedVol(double C_mkt) const {
   std::cout << C_mkt << " : bisection also failed after 100 iters\n";
   return std::numeric_limits<double>::quiet_NaN();
 }
+
+}  // namespace cldiff

@@ -50,7 +50,8 @@ tools/data_loader/               yfinance -> CSV pipeline for real SPX option-ch
 tests/                           Catch2 unit tests (ctest)
 ```
 
-Dependencies point one way: `core <- optim <- calibration -> pricing ->
+Everything lives in `namespace cldiff` (the AKDL geometry in
+`cldiff::kinetic_dikin`). Dependencies point one way: `core <- optim <- calibration -> pricing ->
 models, products, market -> core`. `optim/` never includes a finance header
 and pricers never see an optimiser; `calibration/` is the only bridge.
 

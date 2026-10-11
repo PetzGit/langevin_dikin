@@ -1,6 +1,8 @@
 #pragma once
 #include <cstddef>
 
+namespace cldiff {
+
 class Estimator {
   public:
     Estimator();
@@ -14,3 +16,5 @@ class Estimator {
     double M2_;
     std::size_t count_;
 };
+
+}  // namespace cldiff

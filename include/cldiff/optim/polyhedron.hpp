@@ -1,6 +1,9 @@
 #pragma once
 #include <Eigen/Dense>
 #include <Eigen/Cholesky>
+
+namespace cldiff {
+
 class Polyhedron {
   public:
     Polyhedron(Eigen::MatrixXd A, Eigen::VectorXd b);
@@ -14,3 +17,5 @@ class Polyhedron {
     Eigen::MatrixXd A_;
     Eigen::VectorXd b_;
  };
+
+}  // namespace cldiff

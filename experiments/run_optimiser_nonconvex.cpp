@@ -26,6 +26,8 @@
 #include <vector>
 #include <cmath>
 
+using namespace cldiff;
+
 class NonConvexObjective : public Objective {
 public:
     explicit NonConvexObjective(int d) : d_(d) {}

@@ -1,5 +1,8 @@
 #include "cldiff/models/heston/characteristic_function.hpp"
 #include <stdexcept>
+
+namespace cldiff {
+
 //todo for specific implementation fix vector sizes, this is not good basically
 double heston_params_check_size(double thing, const Eigen::VectorXd& params) {
   if (params.size() < 5) {throw std::invalid_argument("params list is incomplete");}
@@ -23,3 +26,5 @@ std::complex<double> CharacteristicHeston::eval(double u, double time) const {
 Eigen::VectorXd CharacteristicHeston::params() const{
   return params_;
 }
+
+}  // namespace cldiff

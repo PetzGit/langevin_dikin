@@ -2,6 +2,8 @@
 #include <Eigen/Dense>
 #include "cldiff/optim/log_space_objective.hpp"
 
+namespace cldiff {
+
 // Log-space parameterization: kappa, theta, xi and v0 are exp-transformed so
 // they stay positive, rho passes through unchanged. The chain-rule scaling
 // (dL/dy = dL/dp * p) is divided back out for the exp-transformed dims.
@@ -27,3 +29,5 @@ class CorrectedLogSpaceHestonObjective : public LogSpaceObjective {
     static Eigen::VectorXd toPhysical(const Eigen::VectorXd& y);
     static Eigen::VectorXd toLogSpace(const Eigen::VectorXd& p);
 };
+
+}  // namespace cldiff

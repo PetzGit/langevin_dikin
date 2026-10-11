@@ -1,6 +1,9 @@
 #include "cldiff/core/estimator.hpp"
 #include <cmath>
 #include <limits>
+
+namespace cldiff {
+
 Estimator::Estimator() : mean_(0), M2_(0), count_(0) {}
 
 void Estimator::add(double x) {
@@ -26,3 +29,5 @@ double Estimator::getSampleVariance() const {
 double Estimator::getStdError() const {
  return (std::sqrt(getSampleVariance()/(count_)));
 }
+
+}  // namespace cldiff

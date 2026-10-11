@@ -4,6 +4,8 @@
 #include "cldiff/core/rng.hpp"
 #include "cldiff/optim/problem.hpp"
 
+namespace cldiff {
+
 struct OptimResult {
   Eigen::VectorXd x;
   double value;
@@ -20,3 +22,5 @@ public:
   virtual OptimResult minimise(const Problem& problem, const Eigen::MatrixXd& x0, Rng& rng) = 0;
   virtual std::string name() const = 0;
 };
+
+}  // namespace cldiff

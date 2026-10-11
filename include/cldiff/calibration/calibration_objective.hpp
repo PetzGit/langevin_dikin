@@ -6,6 +6,8 @@
 #include "cldiff/calibration/quote_loss.hpp"
 #include "cldiff/calibration/parameter_penalty.hpp"
 
+namespace cldiff {
+
 // The bridge from pricing to optim: sum over quotes of loss(model price),
 // plus an optional parameter penalty, as an Objective over the pricer's
 // parameters. Any Pricer x QuoteLoss x ParameterPenalty combination plugs in.
@@ -26,3 +28,5 @@ class CalibrationObjective : public Objective {
     const QuoteLoss& loss_;
     const ParameterPenalty* penalty_;
 };
+
+}  // namespace cldiff

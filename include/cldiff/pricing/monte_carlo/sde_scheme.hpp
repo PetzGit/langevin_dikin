@@ -2,6 +2,8 @@
 #include <Eigen/Dense>
 #include "cldiff/core/rng.hpp"
 
+namespace cldiff {
+
 class SDEScheme {
   public:
     virtual ~SDEScheme() = default;
@@ -12,3 +14,4 @@ class SDEScheme {
     virtual Eigen::VectorXd parameters() const = 0;    
 };
 
+}  // namespace cldiff

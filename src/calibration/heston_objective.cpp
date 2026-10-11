@@ -1,5 +1,7 @@
 #include "cldiff/calibration/heston_objective.hpp"
 
+namespace cldiff {
+
 HestonObjective::HestonObjective(const MarketData& market_data, int term_num, double L, double lambda_feller,
                                   double feller_smooth_scale)
 : pricer_(term_num, L), loss_(), feller_(lambda_feller, feller_smooth_scale),
@@ -16,3 +18,5 @@ Eigen::VectorXd HestonObjective::gradient(const Eigen::VectorXd& params) const {
 int HestonObjective::dim() const {
   return objective_.dim();
 }
+
+}  // namespace cldiff

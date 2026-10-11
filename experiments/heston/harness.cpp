@@ -68,6 +68,8 @@
 #include <cstdlib>
 #include <vector>
 
+using namespace cldiff;
+
 
 int main(int argc, char** argv) {
   const double S0 = 100.0;

@@ -1,6 +1,8 @@
 #pragma once
 #include "cldiff/pricing/pricer.hpp"
 
+namespace cldiff {
+
 // Heston European calls via the COS method. params = (kappa, theta, xi, rho, v0).
 // Cumulants and the truncation range are computed once per maturity.
 class HestonCosPricer final : public Pricer {
@@ -12,3 +14,5 @@ private:
   int term_num_;
   double L_;
 };
+
+}  // namespace cldiff

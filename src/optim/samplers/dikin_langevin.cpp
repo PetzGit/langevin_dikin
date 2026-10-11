@@ -3,6 +3,8 @@
 #include <Eigen/Cholesky>
 #include <cmath>
 
+namespace cldiff {
+
 struct DikinLangevinSampler::Run {
     const Objective& objective;
     const Polyhedron& polyhedron;
@@ -72,3 +74,5 @@ Proposal DikinLangevinSampler::propose(Run& run, const Eigen::VectorXd& x, const
     const Eigen::VectorXd eta = L.triangularView<Eigen::Lower>().transpose().solve(x_i);
     return Proposal{x + h * m_x + std::sqrt(2.0 * h / beta) * eta, x_i};
 }
+
+}  // namespace cldiff

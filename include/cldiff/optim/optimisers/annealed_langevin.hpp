@@ -4,6 +4,8 @@
 #include "cldiff/optim/optimiser.hpp"
 #include "cldiff/optim/annealing_schedule.hpp"
 
+namespace cldiff {
+
 // Annealed Langevin-on-polyhedron optimiser: every column of x0 is a chain
 // run through overdamped Dikin-Langevin dynamics at the temperature the
 // schedule assigns it, with fitness resampling (best chain kept) every
@@ -28,3 +30,5 @@ private:
   double h_;
   double eps_;
 };
+
+}  // namespace cldiff

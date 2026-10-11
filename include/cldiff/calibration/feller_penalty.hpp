@@ -1,6 +1,8 @@
 #pragma once
 #include "cldiff/calibration/parameter_penalty.hpp"
 
+namespace cldiff {
+
 // lambda * softplus-smoothed max(0, xi^2 - 2*kappa*theta) for Heston params.
 // smooth_scale: width over which the hard max(0,x) is smoothed into a
 // softplus. The hard max(0,x) is continuous but has a non-differentiable
@@ -19,3 +21,5 @@ private:
   double lambda_;
   double smooth_scale_;
 };
+
+}  // namespace cldiff

@@ -7,6 +7,8 @@
 #include "cldiff/calibration/implied_vol_squared_loss.hpp"
 #include "cldiff/calibration/feller_penalty.hpp"
 
+namespace cldiff {
+
 // The standard Heston calibration setup, pre-assembled: COS prices, squared
 // implied-vol error per quote, smoothed Feller penalty (see FellerPenalty for
 // feller_smooth_scale). Equivalent to building a CalibrationObjective from
@@ -27,3 +29,5 @@ class HestonObjective : public Objective {
     FellerPenalty feller_;
     CalibrationObjective objective_;
 };
+
+}  // namespace cldiff

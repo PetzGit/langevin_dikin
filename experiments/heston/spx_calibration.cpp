@@ -23,6 +23,8 @@
 #include <cmath>
 #include <fstream>
 
+using namespace cldiff;
+
 
 int main() {
   std::ifstream meta("meta.txt");

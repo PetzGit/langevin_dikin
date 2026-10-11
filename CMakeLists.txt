@@ -27,30 +27,47 @@ FetchContent_MakeAvailable(catch2)
 
 # --- Your library ---
 add_library(cldiff
-    src/optim/polyhedron.cpp
+    # core
     src/core/rng.cpp
-    src/optim/samplers/dikin_langevin.cpp
+    #src/core/estimator.cpp
+
+    # optim -- generic, no finance
     src/optim/objective.cpp
+    src/optim/polyhedron.cpp
     src/optim/log_space_objective.cpp
-    src/optim/optimisers/annealed_langevin.cpp
-    src/optim/optimisers/projected_gradient_descent.cpp
+    #src/optim/tempered_objective.cpp
+    #src/optim/geometry/kinetic_dikin.cpp
     src/optim/schedules/three_phase_log.cpp
     src/optim/schedules/parallel_floor.cpp
-    #src/optim/geometry/kinetic_dikin.cpp
-    #src/optim/tempered_objective.cpp
-    #src/optim/samplers/akdl.cpp
+    src/optim/optimisers/annealed_langevin.cpp
+    src/optim/optimisers/projected_gradient_descent.cpp
     #src/optim/optimisers/annealed_akdl.cpp
+    src/optim/samplers/dikin_langevin.cpp
+    #src/optim/samplers/akdl.cpp
+
+    # market
+    src/market/market_data.cpp
+
+    # models
+    src/models/black_scholes/black_scholes.cpp
     src/models/heston/characteristic_function.cpp
     src/models/heston/cumulants.cpp
-    src/pricing/fourier/cos_pricer.cpp
-    src/models/black_scholes/black_scholes.cpp
-    src/market/market_data.cpp
+    src/models/heston/feller.cpp
     src/models/heston/heston_cos_pricer.cpp
+    #src/models/heston/full_truncation_scheme.cpp
+
+    # products
+    #src/products/european_call.cpp
+
+    # pricing
+    src/pricing/fourier/cos_pricer.cpp
+    #src/pricing/pde/grid.cpp
+
+    # calibration -- where pricing meets optim
     src/calibration/calibration_objective.cpp
     src/calibration/implied_vol_squared_loss.cpp
     src/calibration/feller_penalty.cpp
     src/calibration/heston_objective.cpp
-    src/models/heston/feller.cpp
     src/calibration/corrected_log_space_heston_objective.cpp
 )
 target_include_directories(cldiff PUBLIC include)

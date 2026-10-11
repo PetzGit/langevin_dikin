@@ -1,5 +1,8 @@
 #pragma once
 #include "cldiff/models/heston/characteristic_function.hpp"
+
+namespace cldiff {
+
 //todo implement potential c_4
 
 struct Cumulants {
@@ -8,3 +11,5 @@ struct Cumulants {
 };
 
 Cumulants cumulants(const CharacteristicHeston& phi, double T);
+
+}  // namespace cldiff

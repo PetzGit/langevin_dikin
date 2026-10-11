@@ -3,6 +3,8 @@
 #include "cldiff/models/heston/cumulants.hpp"
 #include "cldiff/pricing/fourier/cos_pricer.hpp"
 
+namespace cldiff {
+
 HestonCosPricer::HestonCosPricer(int term_num, double L) : term_num_(term_num), L_(L) {}
 
 Eigen::VectorXd HestonCosPricer::price(const Eigen::VectorXd& params, const MarketData& market) const {
@@ -17,3 +19,5 @@ Eigen::VectorXd HestonCosPricer::price(const Eigen::VectorXd& params, const Mark
   }
   return Eigen::Map<Eigen::VectorXd>(prices.data(), static_cast<Eigen::Index>(prices.size()));
 }
+
+}  // namespace cldiff

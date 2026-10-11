@@ -3,6 +3,8 @@
 #include <Eigen/Dense>
 #include "cldiff/optim/sampler.hpp"
 
+namespace cldiff {
+
 // Robbins-Monro step-size adaptation run at the start of every sample() call
 // (matches the reference implementation's update_log_step): for n_warmup
 // steps, after each step log(epsilon) += eta0*(i+t0)^(-kappa) * (accept_prob - target),
@@ -54,3 +56,5 @@ private:
   long n_steps_ = 0;
   long n_accept_ = 0;
 };
+
+}  // namespace cldiff

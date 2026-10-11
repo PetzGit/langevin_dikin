@@ -1,6 +1,8 @@
 #include "cldiff/optim/optimisers/projected_gradient_descent.hpp"
 #include <stdexcept>
 
+namespace cldiff {
+
 ProjectedGradientDescent::ProjectedGradientDescent(int max_iters, int max_backtracks, double initial_lr)
     : max_iters_(max_iters), max_backtracks_(max_backtracks), initial_lr_(initial_lr)
 {
@@ -52,3 +54,5 @@ OptimResult ProjectedGradientDescent::minimise(const Problem& problem, const Eig
 
   return OptimResult{y, current_loss};
 }
+
+}  // namespace cldiff

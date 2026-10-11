@@ -6,6 +6,8 @@
 #include "cldiff/models/black_scholes/black_scholes.hpp"
 #include <cmath>
 
+using namespace cldiff;
+
 TEST_CASE("impliedVol inverts price", "[black_scholes]") {
   const double sigma_true = GENERATE(0.10, 0.20, 0.40, 0.80);
   BlackSchole bs(100.0, 100.0, 1.0, 0.02);

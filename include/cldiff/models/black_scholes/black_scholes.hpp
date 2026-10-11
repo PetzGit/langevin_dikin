@@ -1,5 +1,7 @@
 #pragma once
 
+namespace cldiff {
+
 class BlackSchole {
   public:
     BlackSchole(double S0, double K, double T, double r, double q = 0.0);
@@ -14,3 +16,5 @@ class BlackSchole {
     double r_;
     double q_;
 };
+
+}  // namespace cldiff

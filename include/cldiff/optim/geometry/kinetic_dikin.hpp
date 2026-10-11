@@ -3,6 +3,8 @@
 #include "cldiff/optim/objective.hpp"
 #include "cldiff/optim/polyhedron.hpp"
 
+namespace cldiff {
+
 // Shared geometry and integrator for kinetic Dikin-Langevin dynamics, per
 // Chok, Petzinna & Vasil, "Kinetic Dikin-Langevin Dynamics on Polytopes"
 // (2026). Used by both AKDLSampler (AKDL, Algorithm 4) and
@@ -74,3 +76,5 @@ StepResult dstep(const Objective& objective, const Polyhedron& polyhedron,
                   double tau_mid, int n_mid);
 
 }  // namespace kinetic_dikin
+
+}  // namespace cldiff

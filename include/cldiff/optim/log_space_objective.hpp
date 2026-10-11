@@ -3,6 +3,8 @@
 #include <Eigen/Dense>
 #include "cldiff/optim/objective.hpp"
 
+namespace cldiff {
+
 // Reparameterises an objective so the dims flagged in log_dims are optimised
 // as y = log(p) (keeping p > 0); the remaining dims pass through unchanged.
 //
@@ -29,3 +31,5 @@ class LogSpaceObjective : public Objective {
     std::vector<bool> log_dims_;
     double fd_step_;
 };
+
+}  // namespace cldiff

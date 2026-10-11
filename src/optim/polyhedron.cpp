@@ -2,6 +2,8 @@
 #include <stdexcept>
 #include <Eigen/Cholesky>
 
+namespace cldiff {
+
 Polyhedron::Polyhedron(Eigen::MatrixXd A, Eigen::VectorXd b)
   : A_(std::move(A)), b_(std::move(b))
 {
@@ -45,3 +47,4 @@ Eigen::VectorXd Polyhedron::barrierHessianDivergence(const Eigen::LLT<Eigen::Mat
   return res;
 }
 
+}  // namespace cldiff

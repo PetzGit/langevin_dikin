@@ -3,6 +3,8 @@
 #include <cmath>
 #include <stdexcept>
 
+namespace cldiff {
+
 LogSpaceObjective::LogSpaceObjective(const Objective& inner, std::vector<bool> log_dims, double fd_step)
 : inner_(inner), log_dims_(std::move(log_dims)), fd_step_(fd_step) {
   if (static_cast<int>(log_dims_.size()) != inner_.dim() || fd_step_ <= 0) {
@@ -60,3 +62,5 @@ Eigen::VectorXd LogSpaceObjective::toLogSpace(const Eigen::VectorXd& p, const st
   }
   return y;
 }
+
+}  // namespace cldiff

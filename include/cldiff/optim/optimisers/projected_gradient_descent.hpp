@@ -3,6 +3,8 @@
 #include <Eigen/Dense>
 #include "cldiff/optim/optimiser.hpp"
 
+namespace cldiff {
+
 // Backtracking gradient descent that rejects any trial step leaving the
 // polyhedron, the same way AnnealedLangevinOptimiser rejects an out-of-box
 // proposal. Without this the descent walks straight past hard parameter
@@ -27,3 +29,5 @@ private:
   double initial_lr_;
   bool stuck_ = false;
 };
+
+}  // namespace cldiff

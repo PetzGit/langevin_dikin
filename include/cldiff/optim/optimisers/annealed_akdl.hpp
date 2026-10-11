@@ -4,6 +4,8 @@
 #include "cldiff/optim/optimiser.hpp"
 #include "cldiff/optim/annealing_schedule.hpp"
 
+namespace cldiff {
+
 // Annealed optimiser built on genuine AKDL (Metropolis-adjusted kinetic
 // Dikin-Langevin, Algorithm 4) chains, rather than the unadjusted UKDL
 // dynamics: each chain carries momentum coherently across L deterministic
@@ -47,3 +49,5 @@ private:
   double tau_mid_;
   int n_mid_;
 };
+
+}  // namespace cldiff

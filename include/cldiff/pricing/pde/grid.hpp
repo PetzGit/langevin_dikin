@@ -1,6 +1,8 @@
 #pragma once
 #include <vector>
 
+namespace cldiff {
+
 class Grid {
   public:
     std::vector<double> grid();
@@ -12,3 +14,5 @@ class Grid {
   std::vector<double> grid_;
   S_max_;
 }
+
+}  // namespace cldiff

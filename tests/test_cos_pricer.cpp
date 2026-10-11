@@ -7,6 +7,8 @@
 #include <Eigen/Dense>
 #include <cmath>
 
+using namespace cldiff;
+
 namespace {
 // Fang & Oosterlee (2008) benchmark Heston parameters.
 Eigen::VectorXd benchmarkParams() {

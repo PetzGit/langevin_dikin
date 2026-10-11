@@ -11,6 +11,8 @@
 #include "cldiff/calibration/feller_penalty.hpp"
 #include <Eigen/Dense>
 
+using namespace cldiff;
+
 namespace {
 constexpr double S0 = 100.0, r = 0.02, L = 10.0;
 constexpr int term_num = 128;

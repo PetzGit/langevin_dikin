@@ -2,6 +2,8 @@
 #include "cldiff/pricing/monte_carlo/sde_scheme.hpp"
 #include <Eigen/Dense>
 
+namespace cldiff {
+
 struct HestonParams {
   double r{};
   double q{};
@@ -24,3 +26,5 @@ class HestonScheme final : public SDEScheme {
   private:
     HestonParams params_;
 };
+
+}  // namespace cldiff

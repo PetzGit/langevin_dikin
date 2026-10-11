@@ -1,6 +1,8 @@
 #include "cldiff/optim/schedules/three_phase_log.hpp"
 #include <cmath>
 
+namespace cldiff {
+
 ThreePhaseLogSchedule::ThreePhaseLogSchedule(double rate) : rate_(rate) {}
 
 double ThreePhaseLogSchedule::beta(int step, int num_steps, int /*chain*/, int /*num_chains*/) const {
@@ -14,3 +16,5 @@ double ThreePhaseLogSchedule::beta(int step, int num_steps, int /*chain*/, int /
   }
   return 0.0;
 }
+
+}  // namespace cldiff

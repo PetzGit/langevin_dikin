@@ -4,6 +4,8 @@
 #include <string>
 #include "cldiff/models/black_scholes/black_scholes.hpp"
 
+namespace cldiff {
+
 struct Quote {
   double K;
   double market_price;
@@ -31,3 +33,5 @@ class MarketData {
     double q_;
     std::map<double, std::vector<Quote>> quotes_by_maturity_;
 };
+
+}  // namespace cldiff

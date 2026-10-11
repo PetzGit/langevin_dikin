@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <cmath>
 
+namespace cldiff {
+
 EuropeanCall::EuropeanCall(double K, double r, double T)
     : K_(K), discount_(std::exp(-r * T)) {}
 
@@ -11,3 +13,5 @@ Eigen::VectorXd EuropeanCall::result(const Eigen::VectorXd& final_state) const {
     out(0) = discount_ * std::max(std::exp(final_state(0)) - K_, 0.0);
     return out;
 }
+
+}  // namespace cldiff

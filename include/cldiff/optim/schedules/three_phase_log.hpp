@@ -1,6 +1,8 @@
 #pragma once
 #include "cldiff/optim/annealing_schedule.hpp"
 
+namespace cldiff {
+
 // The original shared schedule: beta_k = 1/log(3 + 2*rate*k) for the first
 // 87.5% of steps, its fourth power until 97.5%, then 0. Identical for every
 // chain. rate was h in Optimiser and epsilon_base in OptimiserMomentum.
@@ -11,3 +13,5 @@ public:
 private:
   double rate_;
 };
+
+}  // namespace cldiff

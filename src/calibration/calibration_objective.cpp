@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <cmath>
 
+namespace cldiff {
+
 CalibrationObjective::CalibrationObjective(const Pricer& pricer, const MarketData& market_data,
                                            const QuoteLoss& loss, const ParameterPenalty* penalty)
 : pricer_(pricer), market_data_(market_data), loss_(loss), penalty_(penalty) {}
@@ -36,3 +38,5 @@ Eigen::VectorXd CalibrationObjective::gradient(const Eigen::VectorXd& params) co
 int CalibrationObjective::dim() const {
   return pricer_.numParameters();
 }
+
+}  // namespace cldiff

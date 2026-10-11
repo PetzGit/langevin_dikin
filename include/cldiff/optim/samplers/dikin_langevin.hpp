@@ -4,6 +4,8 @@
 #include <Eigen/Cholesky>
 #include "cldiff/optim/sampler.hpp"
 
+namespace cldiff {
+
 struct Proposal {
   Eigen::VectorXd Y;
   Eigen::VectorXd x_i;
@@ -23,3 +25,5 @@ private:
   double eps_;
   double h_max_;
 };
+
+}  // namespace cldiff

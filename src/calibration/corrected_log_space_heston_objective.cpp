@@ -1,5 +1,7 @@
 #include "cldiff/calibration/corrected_log_space_heston_objective.hpp"
 
+namespace cldiff {
+
 namespace {
 // (kappa, theta, xi, rho, v0): everything but rho is strictly positive.
 const std::vector<bool>& hestonLogDims() {
@@ -18,3 +20,5 @@ Eigen::VectorXd CorrectedLogSpaceHestonObjective::toPhysical(const Eigen::Vector
 Eigen::VectorXd CorrectedLogSpaceHestonObjective::toLogSpace(const Eigen::VectorXd& p) {
   return LogSpaceObjective::toLogSpace(p, hestonLogDims());
 }
+
+}  // namespace cldiff

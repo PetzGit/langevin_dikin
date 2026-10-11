@@ -1,6 +1,8 @@
 #pragma once
 #include "cldiff/optim/objective.hpp"
 
+namespace cldiff {
+
 // Wraps an objective as U(x)/beta, with a mutable beta -- the textbook
 // simulated-annealing mechanism: as beta -> 0, exp(-U(x)/beta) collapses
 // onto the global minimum of U. Distinct from scaling injected noise (the
@@ -21,3 +23,5 @@ private:
   const Objective& inner_;
   double beta_;
 };
+
+}  // namespace cldiff

@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <cmath>
 
+namespace cldiff {
+
 namespace {
 // Numerically-stable softplus(x/scale)*scale, the standard smooth
 // replacement for max(0,x): converges to max(0,x) as scale->0, matches it
@@ -20,3 +22,5 @@ FellerPenalty::FellerPenalty(double lambda, double smooth_scale)
 double FellerPenalty::operator()(const Eigen::VectorXd& params) const {
   return lambda_*smoothRelu(fellerViolation(params), smooth_scale_);
 }
+
+}  // namespace cldiff

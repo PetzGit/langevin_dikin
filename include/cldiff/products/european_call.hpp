@@ -2,6 +2,8 @@
 #include <Eigen/Dense>
 #include "cldiff/products/observable.hpp"
 
+namespace cldiff {
+
 class EuropeanCall final : public Observable {
   public:
     EuropeanCall(double K, double r, double T);
@@ -12,3 +14,5 @@ class EuropeanCall final : public Observable {
     double K_;
     double discount_;
 };
+
+}  // namespace cldiff

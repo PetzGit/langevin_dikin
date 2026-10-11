@@ -36,6 +36,8 @@
 #include <cmath>
 #include <vector>
 
+using namespace cldiff;
+
 
 int main() {
   const double S0 = 100.0;

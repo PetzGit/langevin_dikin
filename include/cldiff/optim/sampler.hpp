@@ -4,6 +4,8 @@
 #include "cldiff/core/rng.hpp"
 #include "cldiff/optim/problem.hpp"
 
+namespace cldiff {
+
 // Interface for every sampler of exp(-U(x)) on a polytope. Same split as
 // Optimiser: hyperparameters at construction, problem per call.
 class Sampler {
@@ -13,3 +15,5 @@ public:
   virtual Eigen::MatrixXd sample(const Problem& problem, const Eigen::VectorXd& x0, Rng& rng, int n) = 0;
   virtual std::string name() const = 0;
 };
+
+}  // namespace cldiff

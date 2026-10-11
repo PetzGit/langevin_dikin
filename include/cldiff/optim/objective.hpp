@@ -1,6 +1,8 @@
 #pragma once
 #include <Eigen/Dense>
 
+namespace cldiff {
+
 class Objective {
   public:
     virtual double value(const Eigen::VectorXd& x) const = 0;
@@ -8,3 +10,5 @@ class Objective {
     virtual int dim() const = 0;
     virtual ~Objective();
 };
+
+}  // namespace cldiff

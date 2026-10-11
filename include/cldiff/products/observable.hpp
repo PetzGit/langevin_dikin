@@ -1,6 +1,8 @@
 #pragma once
 #include <Eigen/Dense>
 
+namespace cldiff {
+
 class Observable {
   public:
     virtual ~Observable() = default;
@@ -10,3 +12,5 @@ class Observable {
     virtual void onStep(int /*i*/, double /*t*/, const Eigen::VectorXd& /*state*/) {}
     virtual Eigen::VectorXd result(const Eigen::VectorXd& final_state) const = 0;
 };
+
+}  // namespace cldiff

@@ -2,6 +2,8 @@
 #include <cmath>
 #include <iostream>
 
+namespace cldiff {
+
 Cumulants cumulants(const CharacteristicHeston& phi, double T) {
   const Eigen::VectorXd& p = phi.params();
   const double kappa = p(0);
@@ -47,3 +49,5 @@ Cumulants cumulants(const CharacteristicHeston& phi, double T) {
 
   return Cumulants{c_1, c_2};
 }
+
+}  // namespace cldiff

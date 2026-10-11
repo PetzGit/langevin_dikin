@@ -1,5 +1,7 @@
 #include "cldiff/optim/tempered_objective.hpp"
 
+namespace cldiff {
+
 TemperedObjective::TemperedObjective(const Objective& inner, double beta)
     : inner_(inner), beta_(beta) {}
 
@@ -15,3 +17,5 @@ Eigen::VectorXd TemperedObjective::gradient(const Eigen::VectorXd& x) const {
 }
 
 int TemperedObjective::dim() const { return inner_.dim(); }
+
+}  // namespace cldiff
