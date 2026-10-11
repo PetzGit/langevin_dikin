@@ -22,7 +22,7 @@ include/cldiff/                  public headers (src/ mirrors this)
     optimiser.hpp                Optimiser::minimise(problem, x0, rng)        <- interface
     sampler.hpp                  Sampler::sample(problem, x0, rng, n)         <- interface
     annealing_schedule.hpp       AnnealingSchedule::beta(step, n, chain, m)   <- interface
-    polyhedron, tempered_objective
+    polyhedron, tempered_objective, log_space_objective
     geometry/                    kinetic_dikin (QR geometry + integrator for AKDL)
     optimisers/                  annealed_langevin, annealed_akdl, projected_gradient_descent
     samplers/                    dikin_langevin, akdl
@@ -125,7 +125,7 @@ Calibrates the Heston stochastic-volatility model to a set of
   hard kink can be sign-flipped -- real calibrated fits often sit right at
   the Feller boundary, so this isn't a rare edge case.
 - **calibration/corrected_log_space_heston_objective.hpp**: `CorrectedLogSpaceHestonObjective`
-  -- wraps `HestonObjective` in a log-space reparameterization (kappa, theta,
+  -- the generic `optim/LogSpaceObjective` with Heston's mask, wrapping `HestonObjective` in a log-space reparameterization (kappa, theta,
   xi, v0 exp-transformed to stay positive; rho passed through) with the
   chain-rule scaling divided back out. Without this correction the gradient
   the optimizer sees shrinks in proportion to a parameter's own value, so

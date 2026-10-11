@@ -1,7 +1,6 @@
 #pragma once
 #include <Eigen/Dense>
-#include "cldiff/optim/objective.hpp"
-#include "cldiff/calibration/heston_objective.hpp"
+#include "cldiff/optim/log_space_objective.hpp"
 
 // Log-space parameterization: kappa, theta, xi and v0 are exp-transformed so
 // they stay positive, rho passes through unchanged. The chain-rule scaling
@@ -19,15 +18,12 @@
 // and fixes the collapse (kappa/xi/rho all land near truth instead,
 // out-of-sample error drops ~5-9x in testing). rho (index 3) isn't
 // exp-transformed, so it needs no correction.
-class CorrectedLogSpaceHestonObjective : public Objective {
+//
+// This is LogSpaceObjective with Heston's mask (kappa, theta, xi, v0 logged;
+// rho not). The statics apply the same mask without needing an instance.
+class CorrectedLogSpaceHestonObjective : public LogSpaceObjective {
   public:
-    explicit CorrectedLogSpaceHestonObjective(const HestonObjective& inner);
-    double value(const Eigen::VectorXd& y) const override;
-    Eigen::VectorXd gradient(const Eigen::VectorXd& y) const override;
-    int dim() const override;
+    explicit CorrectedLogSpaceHestonObjective(const Objective& inner);
     static Eigen::VectorXd toPhysical(const Eigen::VectorXd& y);
     static Eigen::VectorXd toLogSpace(const Eigen::VectorXd& p);
-
-  private:
-    const HestonObjective& inner_;
 };
