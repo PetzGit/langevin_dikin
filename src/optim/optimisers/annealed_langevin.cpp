@@ -96,7 +96,7 @@ void AnnealedLangevinOptimiser::resample(Run& run) const {
 
 OptimResult AnnealedLangevinOptimiser::minimise(const Problem& problem, const Eigen::MatrixXd& x0, Rng& rng) {
   const Polyhedron& polyhedron = problem.domain;
-  if (polyhedron.size() != x0.rows() || polyhedron.size() != problem.objective.dim() || x0.cols() < 1) {
+  if (polyhedron.dimension() != x0.rows() || polyhedron.dimension() != problem.objective.dim() || x0.cols() < 1) {
     throw std::invalid_argument("Invalid arguments: check dimensions of x0");
   }
   for (int i = 0; i < x0.cols(); ++i) {

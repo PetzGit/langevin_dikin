@@ -9,7 +9,7 @@ Polyhedron::Polyhedron(Eigen::MatrixXd A, Eigen::VectorXd b)
     throw std::invalid_argument("A and b must have matching row/lengths counts");
   }
 }
-int Polyhedron::size() const {
+int Polyhedron::dimension() const {
   return A_.cols();
 }
 const Eigen::MatrixXd& Polyhedron::A() const { return A_; }

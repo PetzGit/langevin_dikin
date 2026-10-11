@@ -73,7 +73,7 @@ double AKDLSampler::stepWithEpsilon(Run& run, double eps) {
 }
 
 Eigen::MatrixXd AKDLSampler::sample(const Problem& problem, const Eigen::VectorXd& x0, Rng& rng, int n) {
-  if (problem.domain.size() != x0.size() || problem.domain.size() != problem.objective.dim() ||
+  if (problem.domain.dimension() != x0.size() || problem.domain.dimension() != problem.objective.dim() ||
       !problem.domain.contains(x0)) {
     throw std::invalid_argument("Invalid arguments: check dimensions and interiority of x0");
   }

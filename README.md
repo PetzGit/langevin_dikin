@@ -46,7 +46,7 @@ include/cldiff/                  public headers (src/ mirrors this)
     implied_vol_squared_loss, feller_penalty,
     heston_objective, corrected_log_space_heston_objective
 experiments/                     buildable studies, one executable each (see below)
-data_loader/                     yfinance -> CSV pipeline for real SPX option-chain data
+tools/data_loader/               yfinance -> CSV pipeline for real SPX option-chain data
 tests/                           Catch2 unit tests (ctest)
 ```
 
@@ -148,10 +148,10 @@ Calibrates the Heston stochastic-volatility model to a set of
   rather than collapsing to the box boundary.
 - `experiments/heston/spx_calibration.cpp` (target `heston_spx_calibration`):
   the same corrected-objective + Optimiser + polish pipeline run against a
-  real SPX snapshot from `data_loader/`. Run from `data_loader/` so
+  real SPX snapshot from `tools/data_loader/`. Run from `tools/data_loader/` so
   `dat.csv`/`meta.txt` resolve from the working directory.
 
-## data_loader
+## tools/data_loader
 
 `data_loader.py` pulls a liquid SPX option chain via `yfinance`, estimates
 the risk-free rate (`^IRX`) and dividend yield (put-call parity on near-money

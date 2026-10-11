@@ -1,10 +1,10 @@
 // Calibrates Heston to a real SPX option-chain snapshot produced by
-// data_loader/data_loader.py (dat.csv + meta.txt), using the corrected
+// tools/data_loader/data_loader.py (dat.csv + meta.txt), using the corrected
 // log-space objective, chain_num=50/run_num=1000/r_rate=20 Optimiser, then a
 // box-constrained GD polish.
 //
-// Run from data_loader/ (so dat.csv/meta.txt resolve from cwd):
-//   cd data_loader && ../build/experiments/heston_spx_calibration
+// Run from tools/data_loader/ (so dat.csv/meta.txt resolve from cwd):
+//   cd tools/data_loader && ../../build/experiments/heston_spx_calibration
 #include "cldiff/models/heston/characteristic_function.hpp"
 #include "cldiff/models/heston/cumulants.hpp"
 #include "cldiff/pricing/fourier/cos_pricer.hpp"
