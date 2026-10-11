@@ -21,7 +21,7 @@
 #include "cldiff/models/heston/characteristic_function.hpp"
 #include "cldiff/models/heston/cumulants.hpp"
 #include "cldiff/pricing/fourier/cos_pricer.hpp"
-#include "cldiff/models/black_scholes/black_scholes.hpp"
+#include "cldiff/market/implied_vol.hpp"
 #include "cldiff/market/market_data.hpp"
 #include "cldiff/calibration/heston_objective.hpp"
 #include "cldiff/calibration/corrected_log_space_heston_objective.hpp"

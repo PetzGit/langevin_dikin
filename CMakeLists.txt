@@ -47,9 +47,9 @@ add_library(cldiff
 
     # market
     src/market/market_data.cpp
+    src/market/implied_vol.cpp
 
     # models
-    src/models/black_scholes/black_scholes.cpp
     src/models/heston/characteristic_function.cpp
     src/models/heston/cumulants.cpp
     src/models/heston/feller.cpp

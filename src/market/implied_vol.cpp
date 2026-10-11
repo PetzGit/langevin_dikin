@@ -1,10 +1,11 @@
-#include "cldiff/models/black_scholes/black_scholes.hpp"
+#include "cldiff/market/implied_vol.hpp"
 #include <cmath>
 #include <iostream>
 #include <algorithm>
 
 namespace cldiff {
 
+namespace {
 double normal_cdf( double x) {
   return 0.5*(1+std::erf(x/std::sqrt(2)));
 }
@@ -13,21 +14,22 @@ double normal_pdf(double x) {
   static const double inv_sqrt_2pi = 1.0/ std::sqrt(2.0* M_PI);
   return inv_sqrt_2pi * std::exp(-0.5 * x*x);
 }
+}  // namespace
 
-BlackSchole::BlackSchole(double S0, double K, double T, double r, double q)
+BlackScholesImpliedVol::BlackScholesImpliedVol(double S0, double K, double T, double r, double q)
 : S0_(S0), K_(K), T_(T), r_(r), q_(q) {}
 
-double BlackSchole::price(double sigma) const {
+double BlackScholesImpliedVol::price(double sigma) const {
   double d_1 = (std::log(S0_/K_) + (r_ - q_ + sigma*sigma*0.5)*T_)/(sigma*std::sqrt(T_));
   double d_2 = d_1 - sigma*std::sqrt(T_);
   return S0_*std::exp(-q_*T_)*normal_cdf(d_1) - K_*std::exp(-r_*T_)*normal_cdf(d_2);
 }
 
-double BlackSchole::vega (double sigma) const {
+double BlackScholesImpliedVol::vega (double sigma) const {
   double d_1 = (std::log(S0_/K_) + (r_ - q_ + sigma*sigma*0.5)*T_)/(sigma*std::sqrt(T_));
   return S0_*std::exp(-q_*T_)*std::sqrt(T_)*normal_pdf(d_1);
 }
-double BlackSchole::impliedVol(double C_mkt) const {
+double BlackScholesImpliedVol::impliedVol(double C_mkt) const {
   const double intrinsic = std::max(S0_*std::exp(-q_*T_) - K_*std::exp(-r_*T_), 0.0);
   const double upper_bound = S0_*std::exp(-q_*T_);
   if (C_mkt < intrinsic || C_mkt > upper_bound || !std::isfinite(C_mkt)) {

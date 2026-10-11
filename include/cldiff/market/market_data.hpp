@@ -2,7 +2,7 @@
 #include <map>
 #include <vector>
 #include <string>
-#include "cldiff/models/black_scholes/black_scholes.hpp"
+#include "cldiff/market/implied_vol.hpp"
 
 namespace cldiff {
 

@@ -27,9 +27,8 @@ include/cldiff/                  public headers (src/ mirrors this)
     optimisers/                  annealed_langevin, annealed_akdl, projected_gradient_descent
     samplers/                    dikin_langevin, akdl
     schedules/                   three_phase_log, parallel_floor
-  market/                        Quote, MarketData
+  market/                        Quote, MarketData, implied_vol (Black-Scholes IV inversion)
   models/                        one folder per model, holding its plug-ins for each method
-    black_scholes/               closed-form price/vega/implied vol
     heston/                      characteristic_function, cumulants, feller,
                                  heston_cos_pricer, full_truncation_scheme (MC)
   products/                      Observable (payoff/path functional)          <- interface
@@ -108,8 +107,10 @@ Calibrates the Heston stochastic-volatility model to a set of
   truncation half-width to avoid catastrophic cancellation at extreme
   parameter draws.
 - **models/heston/heston_cos_pricer.hpp**: `HestonCosPricer`, the Heston x COS `Pricer`.
-- **models/black_scholes/black_scholes.hpp**: Black-Scholes price/vega/implied-vol (Newton solve),
-  with a dividend yield `q` so forwards aren't biased when pricing an index.
+- **market/implied_vol.hpp**: `BlackScholesImpliedVol`, Black-Scholes price/vega/implied-vol
+  (Newton solve), with a dividend yield `q` so forwards aren't biased when
+  pricing an index. Calibration fits in implied-vol space rather than price
+  space, so this is the quoting convention rather than a pricing model.
 - **market/market_data.hpp**: `MarketData` holds quotes by maturity and converts
   each to an implied vol on load; `loadFromCsv` reads whitespace-separated
   `T K price [weight]` rows.

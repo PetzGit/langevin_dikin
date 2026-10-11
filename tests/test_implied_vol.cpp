@@ -3,14 +3,14 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
-#include "cldiff/models/black_scholes/black_scholes.hpp"
+#include "cldiff/market/implied_vol.hpp"
 #include <cmath>
 
 using namespace cldiff;
 
-TEST_CASE("impliedVol inverts price", "[black_scholes]") {
+TEST_CASE("impliedVol inverts price", "[implied_vol]") {
   const double sigma_true = GENERATE(0.10, 0.20, 0.40, 0.80);
-  BlackSchole bs(100.0, 100.0, 1.0, 0.02);
+  BlackScholesImpliedVol bs(100.0, 100.0, 1.0, 0.02);
 
   const double C = bs.price(sigma_true);
   CAPTURE(sigma_true, C);

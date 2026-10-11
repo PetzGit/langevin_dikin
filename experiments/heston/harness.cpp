@@ -51,7 +51,7 @@
 #include "cldiff/models/heston/characteristic_function.hpp"
 #include "cldiff/models/heston/cumulants.hpp"
 #include "cldiff/pricing/fourier/cos_pricer.hpp"
-#include "cldiff/models/black_scholes/black_scholes.hpp"
+#include "cldiff/market/implied_vol.hpp"
 #include "cldiff/market/market_data.hpp"
 #include "cldiff/calibration/heston_objective.hpp"
 #include "cldiff/calibration/corrected_log_space_heston_objective.hpp"
@@ -115,7 +115,7 @@ int main(int argc, char** argv) {
     Range range = make_range(cum, L);
     for (double K : test_strikes) {
       double price = cos_pricer(phi_true, range, K, T, r, term_num, S0);
-      BlackSchole bs(S0, K, T, r);
+      BlackScholesImpliedVol bs(S0, K, T, r);
       test_points.push_back({T, K, bs.impliedVol(price)});
     }
   }
@@ -128,7 +128,7 @@ int main(int argc, char** argv) {
       Cumulants cum = cumulants(phi, tp.T);
       Range range = make_range(cum, L);
       double price = cos_pricer(phi, range, tp.K, tp.T, r, term_num, S0);
-      BlackSchole bs(S0, tp.K, tp.T, r);
+      BlackScholesImpliedVol bs(S0, tp.K, tp.T, r);
       double iv = bs.impliedVol(price);
       // A non-finite IV means the fitted params priced outside the arbitrage
       // bounds; score it as a full 100 vol points rather than dropping it.

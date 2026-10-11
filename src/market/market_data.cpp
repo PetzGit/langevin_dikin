@@ -1,5 +1,5 @@
 #include "cldiff/market/market_data.hpp"
-#include "cldiff/models/black_scholes/black_scholes.hpp"
+#include "cldiff/market/implied_vol.hpp"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -13,7 +13,7 @@ MarketData::MarketData(double S0, double r, double q)
 }
 
 void MarketData::addQuote(double T, double K, double market_price, double weight) {
-  BlackSchole iv_calc(S0_, K, T, r_, q_);
+  BlackScholesImpliedVol iv_calc(S0_, K, T, r_, q_);
   double iv = iv_calc.impliedVol(market_price);
   if (iv!=iv) {
     std::cerr << "Warning: implied vol did not converge for K=" << K << ", T=" << T << "\n";
