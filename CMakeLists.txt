@@ -27,25 +27,25 @@ FetchContent_MakeAvailable(catch2)
 
 # --- Your library ---
 add_library(cldiff
-    src/polyhedron.cpp
-    src/rng.cpp
-    src/sampler.cpp
-    src/target.cpp
-    src/optimiser.cpp
-    src/optimiser_parallel_annealing.cpp
-    #src/kinetic_dikin.cpp
-    #src/tempered_objective.cpp
-    #src/sampler_momentum.cpp
-    #src/optimiser_momentum.cpp
-    #src/optimiser_momentum_parallel_annealing.cpp
-    src/heston/characteristic_function.cpp
-    src/heston/cumulants.cpp
-    src/heston/cos_pricer.cpp
-    src/heston/black_scholes.cpp
-    src/heston/market_data.cpp
-    src/heston/heston_objective.cpp
-    src/heston/feller.cpp
-    src/heston/corrected_log_space_heston_objective.cpp
+    src/optim/polyhedron.cpp
+    src/core/rng.cpp
+    src/optim/samplers/dikin_langevin.cpp
+    src/optim/objective.cpp
+    src/optim/optimisers/annealed_langevin.cpp
+    src/optim/optimisers/annealed_langevin_parallel.cpp
+    #src/optim/geometry/kinetic_dikin.cpp
+    #src/optim/tempered_objective.cpp
+    #src/optim/samplers/akdl.cpp
+    #src/optim/optimisers/annealed_akdl.cpp
+    #src/optim/optimisers/annealed_akdl_parallel.cpp
+    src/models/heston/characteristic_function.cpp
+    src/models/heston/cumulants.cpp
+    src/pricing/fourier/cos_pricer.cpp
+    src/models/black_scholes/black_scholes.cpp
+    src/market/market_data.cpp
+    src/calibration/heston_objective.cpp
+    src/models/heston/feller.cpp
+    src/calibration/corrected_log_space_heston_objective.cpp
 )
 target_include_directories(cldiff PUBLIC include)
 target_link_libraries(cldiff PUBLIC Eigen3::Eigen)
@@ -57,4 +57,4 @@ target_compile_options(cldiff PRIVATE -Wall -Wextra -Werror)
 #enable_testing()
 #add_subdirectory(tests)
 
-add_subdirectory(examples)
+add_subdirectory(experiments)
