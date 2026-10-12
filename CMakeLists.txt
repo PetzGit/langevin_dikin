@@ -17,6 +17,11 @@ FetchContent_Declare(
 set(EIGEN_BUILD_DOC OFF CACHE BOOL "" FORCE)
 set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(eigen)
+# Treat Eigen as a system header so its internal warnings (e.g. GCC 13's
+# false-positive -Wmaybe-uninitialized in the triangular kernels) don't trip
+# -Werror on our own targets.
+get_target_property(EIGEN_INCLUDES eigen INTERFACE_INCLUDE_DIRECTORIES)
+set_target_properties(eigen PROPERTIES INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "${EIGEN_INCLUDES}")
 
 FetchContent_Declare(
   catch2
@@ -35,15 +40,15 @@ add_library(cldiff
     src/optim/objective.cpp
     src/optim/polyhedron.cpp
     src/optim/log_space_objective.cpp
-    #src/optim/tempered_objective.cpp
-    #src/optim/geometry/kinetic_dikin.cpp
+    src/optim/tempered_objective.cpp
+    src/optim/geometry/kinetic_dikin.cpp
     src/optim/schedules/three_phase_log.cpp
     src/optim/schedules/parallel_floor.cpp
     src/optim/optimisers/annealed_langevin.cpp
     src/optim/optimisers/projected_gradient_descent.cpp
-    #src/optim/optimisers/annealed_akdl.cpp
+    src/optim/optimisers/annealed_akdl.cpp
     src/optim/samplers/dikin_langevin.cpp
-    #src/optim/samplers/akdl.cpp
+    src/optim/samplers/akdl.cpp
 
     # market
     src/market/market_data.cpp
