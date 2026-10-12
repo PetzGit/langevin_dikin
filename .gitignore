@@ -5,3 +5,4 @@ tools/data_loader/data_venv/
 __pycache__/
 *.pyc
 .*.sw?
+dikinPython/
