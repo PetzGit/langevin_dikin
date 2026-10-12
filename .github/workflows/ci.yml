@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: build-and-test (${{ matrix.compiler.name }})
+    # Pinned rather than ubuntu-latest so a runner compiler upgrade can't
+    # introduce a new warning that -Werror turns into a failure.
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler:
+          - { name: gcc,   cc: gcc,   cxx: g++ }
+          - { name: clang, cc: clang, cxx: clang++ }
+    env:
+      CC: ${{ matrix.compiler.cc }}
+      CXX: ${{ matrix.compiler.cxx }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build -j "$(nproc)"
+
+      # Experiments are built (so they must compile) but not run: they are
+      # slow and spx_calibration needs local data files.
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
