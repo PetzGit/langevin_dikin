@@ -1,11 +1,13 @@
 # cldiff
 
-Barrier-Hessian ("Dikin metric") Langevin sampling and optimization on
-polyhedra, plus a Heston stochastic-volatility calibration pipeline built on
-top of it as an application. C++17, Eigen-based, CMake build.
+Barrier-Hessian ("Dikin metric") Langevin sampling and optimisation on
+polyhedra, with a Heston stochastic-volatility calibration pipeline and a
+Monte Carlo pricing engine built on top of it. C++17, Eigen, CMake.
 
 Implements the method of Chok & Petzinna (2026), *Constrained Dikin–Langevin
-diffusion for polyhedra* -- see [Reference](#reference) below.
+diffusion for polyhedra* -- see [Reference](#reference). The kinetic
+(AKDL) sampler and optimiser come from follow-up work in progress and are
+included as experimental code.
 
 ## Layout
 
@@ -31,12 +33,14 @@ include/cldiff/                  public headers (src/ mirrors this)
   models/                        one folder per model, holding its plug-ins for each method
     heston/                      characteristic_function, cumulants, feller,
                                  heston_cos_pricer, full_truncation_scheme (MC)
+    gbm/                         gbm_exact (MC)
   products/                      Observable (payoff/path functional)          <- interface
                                  european_call
   pricing/
     pricer.hpp                   Pricer::price(params, market)                <- interface
     fourier/                     cos_pricer (generic COS engine)
     monte_carlo/                 SDEScheme                                    <- interface
+                                 mc_harness (MonteCarloHarness)
     pde/                         grid (in progress)
   calibration/                   where pricing meets optim
     calibration_objective.hpp    CalibrationObjective(Pricer, MarketData, QuoteLoss, ParameterPenalty*)
@@ -50,9 +54,10 @@ tests/                           Catch2 unit tests (ctest)
 ```
 
 Everything lives in `namespace cldiff` (the AKDL geometry in
-`cldiff::kinetic_dikin`). Dependencies point one way: `core <- optim <- calibration -> pricing ->
-models, products, market -> core`. `optim/` never includes a finance header
-and pricers never see an optimiser; `calibration/` is the only bridge.
+`cldiff::kinetic_dikin`). `optim/` depends only on `core/` and never includes
+a finance header; models implement the interfaces in `pricing/` and
+`products/`; pricers never see an optimiser. `calibration/` is the only
+place finance meets optim.
 
 ## optim: Polyhedron / samplers / optimisers
 
@@ -73,14 +78,15 @@ OptimResult result = optimiser.minimise({objective, polyhedron}, x0, rng);  // x
 - **DikinLangevinSampler**: single-chain Dikin-Langevin sampler. Proposes moves scaled by
   the local barrier geometry, so step size naturally shrinks near the
   boundary and grows in the interior.
-- **AKDLSampler**: Metropolis-adjusted kinetic Dikin-Langevin (persistent
-  momentum), with optional Robbins-Monro step-size warmup (`AKDLWarmup`).
+- **AKDLSampler** (experimental): Metropolis-adjusted kinetic Dikin-Langevin
+  (persistent momentum), with optional Robbins-Monro step-size warmup
+  (`AKDLWarmup`).
 - **AnnealedLangevinOptimiser**: one Dikin-Langevin chain per column of `x0`, each at the
   temperature its `AnnealingSchedule` assigns, with periodic resampling (every
   `r_rate` steps) toward the best-performing chains. Returns the best point
   of the final population (`OptimResult`).
-- **AnnealedAKDLOptimiser**: the same annealing/resampling scheme over AKDL chains,
-  annealing the objective itself (`U/beta`).
+- **AnnealedAKDLOptimiser** (experimental): the same annealing/resampling
+  scheme over AKDL chains, annealing the objective itself (`U/beta`).
 - **ProjectedGradientDescent**: deterministic backtracking gradient descent
   that rejects steps leaving the polyhedron. Serves as the local baseline and
   as the "polish" run from another optimiser's result.
@@ -91,9 +97,8 @@ OptimResult result = optimiser.minimise({objective, polyhedron}, x0, rng);  // x
   schedule works with any annealed optimiser.
 
 Demos: `experiments/run_box_gaussian.cpp` (sampler on a Gaussian target),
-`experiments/run_optimiser_nonconvex.cpp` (optimiser on a nonconvex benchmark --
-the sanity check that the core algorithm works before it's pointed at
-anything financial).
+`experiments/run_optimiser_nonconvex.cpp` (optimiser on the paper's nonconvex
+benchmark).
 
 ## Models, pricing and calibration
 
@@ -122,19 +127,29 @@ Calibrates the Heston stochastic-volatility model to a set of
 - **calibration/heston_objective.hpp**: `HestonObjective` -- the standard
   assembly: `HestonCosPricer` + `ImpliedVolSquaredLoss` (sum of
   squared implied-vol errors across all quotes) + `FellerPenalty`, a smooth softplus
-  relaxation of the Feller penalty. The penalty is smoothed rather than a
-  hard `max(0, x)` because a finite-difference gradient stencil straddling a
-  hard kink can be sign-flipped -- real calibrated fits often sit right at
-  the Feller boundary, so this isn't a rare edge case.
+  relaxation of the Feller penalty. It is smoothed because a
+  finite-difference stencil straddling a hard `max(0, x)` kink can flip the
+  gradient's sign, and calibrated fits often sit on the Feller boundary.
 - **calibration/corrected_log_space_heston_objective.hpp**: `CorrectedLogSpaceHestonObjective`
   -- the generic `optim/LogSpaceObjective` with Heston's mask, wrapping `HestonObjective` in a log-space reparameterization (kappa, theta,
   xi, v0 exp-transformed to stay positive; rho passed through) with the
-  chain-rule scaling divided back out. Without this correction the gradient
-  the optimizer sees shrinks in proportion to a parameter's own value, so
-  parameters near zero stop generating signal even when the true physical
-  sensitivity is still large -- this is the fix that makes calibration
-  actually converge instead of collapsing to the box boundary. **Use this
+  chain-rule scaling divided back out. Without the correction the gradient
+  shrinks in proportion to each parameter's value, so parameters near zero
+  stop moving and calibration collapses to the box boundary. **Use this
   class, not the raw `HestonObjective`, when calibrating.**
+
+### Monte Carlo
+
+`MonteCarloHarness(x0, scheme, observable, T, steps, n_paths)` simulates
+paths with any `SDEScheme` and feeds them to any `Observable`, returning a
+running mean and standard error per output (`Estimator`). Paths with
+non-finite results are counted and skipped.
+
+- **Schemes**: `GbmScheme` (exact log-normal step) and `HestonScheme`
+  (full-truncation Euler on `(ln S, v)`).
+- **Products**: `EuropeanCall` (discounted payoff at maturity). Observables
+  can also opt in to per-step callbacks (`needsSteps()` / `onStep`) for
+  path-dependent payoffs.
 
 ### Experiments
 
@@ -163,21 +178,48 @@ strikes), filters for liquidity (open interest + bid-ask spread), and writes
 
 ## Tests
 
-`tests/` holds Catch2 unit tests: the Black-Scholes implied-vol round trip,
-the COS pricer against the Fang & Oosterlee (2008) benchmark, and
-HestonObjective's behaviour around known true parameters. Run them with
-`ctest` from the build directory.
+`tests/` holds Catch2 unit tests, run with `ctest` from the build directory:
+
+- Black-Scholes implied-vol round trip
+- COS pricer against the Fang & Oosterlee (2008) benchmark
+- `HestonObjective` around known true parameters
+- `Estimator` moments and numerical stability
+- GBM Monte Carlo against the Black-Scholes closed form
+- AKDL smoke tests: QR geometry, sampler feasibility and reproducibility,
+  warmup, and the annealed optimiser reaching an interior minimum
 
 ## Build
 
 ```
 mkdir -p build && cd build
-cmake ..
+cmake -DCMAKE_BUILD_TYPE=Release ..
 make -j
+ctest
 ```
 
 Fetches Eigen 3.4.0 and Catch2 at configure time. All targets link against
-the `cldiff` static library, built with `-Wall -Wextra -Werror`.
+the `cldiff` static library, which is built with `-Wall -Wextra -Werror`.
+Without `CMAKE_BUILD_TYPE` CMake builds unoptimised, and the experiments run
+several times slower.
+
+## Roadmap
+
+**Done**
+- Dikin-Langevin sampler and annealed optimiser on polyhedra
+- Heston calibration via the COS method, on synthetic data and a real SPX snapshot
+- Monte Carlo harness with exact GBM and full-truncation Heston schemes
+
+**In progress**
+- Heston Monte Carlo validated against COS prices
+- Parallel annealed optimiser (thread pool, results identical for any thread count)
+
+**Planned**
+- American options by Monte Carlo (Longstaff-Schwartz)
+- PDE pricer (Crank-Nicolson on a sinh-stretched grid)
+- Black-Scholes `Pricer`
+- Risk: exposure profiles and PFE, VaR/CVaR, Kupiec and Christoffersen back-tests
+- Parallel Monte Carlo paths and scenario revaluation, on the same thread pool
+- Make the COS engine model-agnostic (it currently includes Heston headers)
 
 ## Reference
 

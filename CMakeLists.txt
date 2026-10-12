@@ -30,7 +30,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(catch2)
 
-# --- Your library ---
+# --- Library ---
 add_library(cldiff
     # core
     src/core/rng.cpp
@@ -80,7 +80,7 @@ add_library(cldiff
 target_include_directories(cldiff PUBLIC include)
 target_link_libraries(cldiff PUBLIC Eigen3::Eigen)
 
-# Warnings + sanitizers, as discussed early on
+# Strict warnings on the library; Eigen is a system include, so its headers are exempt
 target_compile_options(cldiff PRIVATE -Wall -Wextra -Werror)
 
 # --- Tests ---
