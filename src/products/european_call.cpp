@@ -4,8 +4,8 @@
 
 namespace cldiff {
 
-EuropeanCall::EuropeanCall(double K, double r, double T)
-    : K_(K), discount_(std::exp(-r * T)) {}
+EuropeanCall::EuropeanCall(double K, MarketInputs market, double T)
+    : K_(K), discount_(std::exp(-market.r * T)) {}
 
 Eigen::VectorXd EuropeanCall::result(const Eigen::VectorXd& final_state) const {
     Eigen::VectorXd out(1);

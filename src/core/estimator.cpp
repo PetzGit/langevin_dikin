@@ -14,6 +14,7 @@ void Estimator::add(double x) {
 }
 
 double Estimator::getMean() const {
+  if (count_ == 0) return std::numeric_limits<double>::quiet_NaN();
   return mean_;
 }
 
@@ -28,6 +29,10 @@ double Estimator::getSampleVariance() const {
 
 double Estimator::getStdError() const {
  return (std::sqrt(getSampleVariance()/(count_)));
+}
+
+std::size_t Estimator::getCount() const {
+  return count_;
 }
 
 }  // namespace cldiff

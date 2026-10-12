@@ -29,7 +29,7 @@ FetchContent_MakeAvailable(catch2)
 add_library(cldiff
     # core
     src/core/rng.cpp
-    #src/core/estimator.cpp
+    src/core/estimator.cpp
 
     # optim -- generic, no finance
     src/optim/objective.cpp
@@ -54,14 +54,16 @@ add_library(cldiff
     src/models/heston/cumulants.cpp
     src/models/heston/feller.cpp
     src/models/heston/heston_cos_pricer.cpp
-    #src/models/heston/full_truncation_scheme.cpp
+    src/models/heston/full_truncation_scheme.cpp
+    src/models/gbm/gbm_exact.cpp
 
     # products
-    #src/products/european_call.cpp
+    src/products/european_call.cpp
 
     # pricing
     src/pricing/fourier/cos_pricer.cpp
     #src/pricing/pde/grid.cpp
+    src/pricing/monte_carlo/mc_harness.cpp
 
     # calibration -- where pricing meets optim
     src/calibration/calibration_objective.cpp

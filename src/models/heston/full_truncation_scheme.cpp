@@ -5,9 +5,8 @@
 
 namespace cldiff {
 
-HestonScheme::HestonScheme(const Eigen::VectorXd& p, double r, double q) {
-  params_.r = r;
-  params_.q = q;
+HestonScheme::HestonScheme(const Eigen::VectorXd& p, MarketInputs market)
+    : market_(market) {
   setParameters(p);
 }
 
@@ -16,12 +15,12 @@ void HestonScheme::step(Eigen::VectorXd& state, double dt, Rng& rng) const {
   const double z2 = rng.normal();
   const double eps1 = z1;
   const double eps2 = params_.rho * z1
-                    + std::sqrt(1.0 - params_.rho * params_.rho) * z2;
+                    + rho_bar_* z2;
 
   const double vp = std::max(0.0, state(1));
   const double sq = std::sqrt(vp * dt);
 
-  state(0) += (params_.r - params_.q - 0.5 * vp) * dt + sq * eps1;
+  state(0) += (market_.r - market_.q - 0.5 * vp) * dt + sq * eps1;
   state(1) += params_.kappa * (params_.theta - vp) * dt
             + params_.xi * sq * eps2;
 }
@@ -34,10 +33,15 @@ void HestonScheme::setParameters(const Eigen::VectorXd& p) {
     throw std::invalid_argument(
         "HestonScheme: expected 4 parameters (kappa, theta, xi, rho)");
   }
+  if (!(p(0) > 0) || !(p(1) > 0) || !(p(2) > 0) || !(std::abs(p(3)) < 1)) {
+    throw std::invalid_argument(
+        "HestonScheme: need kappa, theta, xi > 0 and |rho| < 1");
+  }
   params_.kappa = p(0);
   params_.theta = p(1);
   params_.xi    = p(2);
   params_.rho   = p(3);
+  rho_bar_      = std::sqrt(1.0 - params_.rho * params_.rho);
 }
 
 Eigen::VectorXd HestonScheme::parameters() const {

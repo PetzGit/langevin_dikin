@@ -11,6 +11,7 @@ class Estimator {
     double getVariance() const;
     double getSampleVariance() const;
     double getStdError() const;
+    std::size_t getCount() const;
   private:
     double mean_;
     double M2_;
