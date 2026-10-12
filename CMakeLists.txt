@@ -30,6 +30,12 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(catch2)
 
+# Strict warnings on every target defined below (library, tests,
+# experiments). Set after the FetchContent calls so Eigen and Catch2's own
+# targets don't inherit it, and Eigen is a system include so its headers are
+# exempt too.
+add_compile_options(-Wall -Wextra -Werror)
+
 # --- Library ---
 add_library(cldiff
     # core
@@ -79,9 +85,6 @@ add_library(cldiff
 )
 target_include_directories(cldiff PUBLIC include)
 target_link_libraries(cldiff PUBLIC Eigen3::Eigen)
-
-# Strict warnings on the library; Eigen is a system include, so its headers are exempt
-target_compile_options(cldiff PRIVATE -Wall -Wextra -Werror)
 
 # --- Tests ---
 list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)

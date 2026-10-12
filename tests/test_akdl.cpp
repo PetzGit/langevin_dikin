@@ -44,7 +44,7 @@ Polyhedron box(int d) {
 TEST_CASE("TemperedObjective divides value and gradient by beta", "[akdl]") {
   const Quadratic inner(Eigen::Vector2d(0.3, -0.2));
   TemperedObjective tempered(inner, 0.5);
-  const Eigen::Vector2d x(0.1, 0.4);
+  const Eigen::VectorXd x = Eigen::Vector2d(0.1, 0.4);
 
   REQUIRE(tempered.dim() == 2);
   REQUIRE(std::abs(tempered.value(x) - inner.value(x) / 0.5) < 1e-14);
