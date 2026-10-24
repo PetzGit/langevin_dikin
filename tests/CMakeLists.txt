@@ -5,6 +5,7 @@ add_executable(cldiff_tests
     test_estimator.cpp
     test_gbm_vs_bs.cpp
     test_akdl.cpp
+    test_heston_vs_cos.cpp
 )
 target_link_libraries(cldiff_tests PRIVATE cldiff Catch2::Catch2WithMain)
 
