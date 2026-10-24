@@ -67,6 +67,7 @@ add_library(cldiff
     src/models/heston/heston_cos_pricer.cpp
     src/models/heston/full_truncation_scheme.cpp
     src/models/gbm/gbm_exact.cpp
+    src/models/ou/ou_exact.cpp
 
     # products
     src/products/european_call.cpp

@@ -13,10 +13,16 @@ struct MonteCarloResult {
   std::size_t n_nonfinite = 0;
 };
 
+struct PathStore {
+  std::vector<Eigen::MatrixXd> states;
+  std::vector<char> valid;
+};
+
+
 class MonteCarloHarness {
   public:
     explicit MonteCarloHarness(const Eigen::VectorXd& x0, const SDEScheme& scheme, Observable& obs, double T, int steps, std::size_t n_paths);
-    MonteCarloResult run(Rng& rng);
+    MonteCarloResult run(Rng& rng, PathStore* store = nullptr);
   private:
     Eigen::VectorXd x0_;
     const SDEScheme& scheme_;

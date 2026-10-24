@@ -11,11 +11,18 @@ MonteCarloHarness::MonteCarloHarness(const Eigen::VectorXd& x0, const SDEScheme&
   dt_ = T / steps;
 }
 
-MonteCarloResult MonteCarloHarness::run(Rng& rng) {
+MonteCarloResult MonteCarloHarness::run(Rng& rng, PathStore* store) {
   const bool step_flag = obs_.needsSteps();
   MonteCarloResult res;
   res.outputs.resize(obs_.numOutputs());
   Eigen::VectorXd state(x0_.size());
+  if (store) {
+    store->valid.assign(n_paths_, 1);
+    store->states.assign(n_steps_ + 1, Eigen::MatrixXd(n_paths_, x0_.size()));
+    for (std::size_t i{0}; i < n_paths_; i++) {
+      store->states[0].row(i) = x0_.transpose();
+    }
+  }
   for (std::size_t i{0}; i < n_paths_; i++) {
     state = x0_;
     obs_.onStart(state);
@@ -23,6 +30,9 @@ MonteCarloResult MonteCarloHarness::run(Rng& rng) {
       scheme_.step(state, dt_, rng);
       if (step_flag) {
         obs_.onStep(j, (j+1) * dt_, state);
+      }
+      if (store) {
+        store->states[j+1].row(i) = state.transpose(); 
       }
     }
     const Eigen::VectorXd out = obs_.result(state);
@@ -37,6 +47,7 @@ MonteCarloResult MonteCarloHarness::run(Rng& rng) {
     else {
       ++res.n_nonfinite;
     }
+  if (store) store->valid[i] = out.allFinite();
   }
   return res;
 }
